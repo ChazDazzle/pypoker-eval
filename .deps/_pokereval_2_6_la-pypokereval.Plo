@@ -1,0 +1,433 @@
+_pokereval_2_6_la-pypokereval.lo _pokereval_2_6_la-pypokereval.o:  \
+ pypokereval.c /home/pokeit/include/python2.6/Python.h \
+  /home/pokeit/include/python2.6/patchlevel.h \
+  /home/pokeit/include/python2.6/pyconfig.h \
+  /home/pokeit/include/python2.6/pymacconfig.h \
+  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/limits.h \
+  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-64.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/bits/xopen_lim.h \
+  /usr/include/bits/stdio_lim.h /usr/include/stdio.h \
+  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h \
+  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
+  /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+  /usr/include/bits/wchar.h /usr/include/gconv.h \
+  /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h \
+  /usr/include/bits/sys_errlist.h /usr/include/string.h \
+  /usr/include/xlocale.h /usr/include/errno.h /usr/include/bits/errno.h \
+  /usr/include/linux/errno.h /usr/include/asm/errno.h \
+  /usr/include/asm-x86_64/errno.h /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/errno-base.h /usr/include/stdlib.h \
+  /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
+  /usr/include/endian.h /usr/include/bits/endian.h \
+  /usr/include/sys/types.h /usr/include/time.h /usr/include/sys/select.h \
+  /usr/include/bits/select.h /usr/include/bits/sigset.h \
+  /usr/include/bits/time.h /usr/include/sys/sysmacros.h \
+  /usr/include/bits/pthreadtypes.h /usr/include/alloca.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/environments.h /usr/include/bits/confname.h \
+  /usr/include/getopt.h /usr/include/assert.h \
+  /home/pokeit/include/python2.6/pyport.h /usr/include/stdint.h \
+  /usr/include/math.h /usr/include/bits/huge_val.h \
+  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
+  /usr/include/bits/inf.h /usr/include/bits/nan.h \
+  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+  /usr/include/sys/time.h /usr/include/sys/stat.h \
+  /usr/include/bits/stat.h /home/pokeit/include/python2.6/pymath.h \
+  /home/pokeit/include/python2.6/pymem.h \
+  /home/pokeit/include/python2.6/object.h \
+  /home/pokeit/include/python2.6/objimpl.h \
+  /home/pokeit/include/python2.6/pydebug.h \
+  /home/pokeit/include/python2.6/unicodeobject.h /usr/include/ctype.h \
+  /home/pokeit/include/python2.6/intobject.h \
+  /home/pokeit/include/python2.6/boolobject.h \
+  /home/pokeit/include/python2.6/longobject.h \
+  /home/pokeit/include/python2.6/floatobject.h \
+  /home/pokeit/include/python2.6/complexobject.h \
+  /home/pokeit/include/python2.6/rangeobject.h \
+  /home/pokeit/include/python2.6/stringobject.h \
+  /home/pokeit/include/python2.6/bufferobject.h \
+  /home/pokeit/include/python2.6/bytesobject.h \
+  /home/pokeit/include/python2.6/bytearrayobject.h \
+  /home/pokeit/include/python2.6/tupleobject.h \
+  /home/pokeit/include/python2.6/listobject.h \
+  /home/pokeit/include/python2.6/dictobject.h \
+  /home/pokeit/include/python2.6/enumobject.h \
+  /home/pokeit/include/python2.6/setobject.h \
+  /home/pokeit/include/python2.6/methodobject.h \
+  /home/pokeit/include/python2.6/moduleobject.h \
+  /home/pokeit/include/python2.6/funcobject.h \
+  /home/pokeit/include/python2.6/classobject.h \
+  /home/pokeit/include/python2.6/fileobject.h \
+  /home/pokeit/include/python2.6/cobject.h \
+  /home/pokeit/include/python2.6/traceback.h \
+  /home/pokeit/include/python2.6/sliceobject.h \
+  /home/pokeit/include/python2.6/cellobject.h \
+  /home/pokeit/include/python2.6/iterobject.h \
+  /home/pokeit/include/python2.6/genobject.h \
+  /home/pokeit/include/python2.6/descrobject.h \
+  /home/pokeit/include/python2.6/warnings.h \
+  /home/pokeit/include/python2.6/weakrefobject.h \
+  /home/pokeit/include/python2.6/codecs.h \
+  /home/pokeit/include/python2.6/pyerrors.h \
+  /home/pokeit/include/python2.6/pystate.h \
+  /home/pokeit/include/python2.6/pyarena.h \
+  /home/pokeit/include/python2.6/modsupport.h \
+  /home/pokeit/include/python2.6/pythonrun.h \
+  /home/pokeit/include/python2.6/ceval.h \
+  /home/pokeit/include/python2.6/sysmodule.h \
+  /home/pokeit/include/python2.6/intrcheck.h \
+  /home/pokeit/include/python2.6/import.h \
+  /home/pokeit/include/python2.6/abstract.h \
+  /home/pokeit/include/python2.6/compile.h \
+  /home/pokeit/include/python2.6/code.h \
+  /home/pokeit/include/python2.6/eval.h \
+  /home/pokeit/include/python2.6/pystrtod.h \
+  /home/pokeit/include/python2.6/pystrcmp.h \
+  /home/pokeit/include/python2.6/pyfpe.h \
+  /usr/local/include/poker-eval/poker_defs.h \
+  /usr/local/include/poker-eval/poker_config.h /usr/include/inttypes.h \
+  /usr/local/include/poker-eval/deck.h \
+  /usr/local/include/poker-eval/pokereval_export.h \
+  /usr/local/include/poker-eval/handval.h \
+  /usr/local/include/poker-eval/handval_low.h \
+  /usr/local/include/poker-eval/enumerate.h \
+  /usr/local/include/poker-eval/combinations.h \
+  /usr/local/include/poker-eval/game_std.h \
+  /usr/local/include/poker-eval/deck_std.h \
+  /usr/local/include/poker-eval/rules_std.h \
+  /usr/local/include/poker-eval/pokereval_export.h \
+  /usr/local/include/poker-eval/inlines/eval.h \
+  /usr/local/include/poker-eval/poker_defs.h \
+  /usr/local/include/poker-eval/inlines/eval_low.h \
+  /usr/local/include/poker-eval/handval_low.h \
+  /usr/local/include/poker-eval/inlines/eval_low8.h \
+  /usr/local/include/poker-eval/inlines/eval_joker_low.h \
+  /usr/local/include/poker-eval/deck_joker.h \
+  /usr/local/include/poker-eval/inlines/eval_low.h \
+  /usr/local/include/poker-eval/inlines/eval_omaha.h \
+  /usr/local/include/poker-eval/inlines/eval.h \
+  /usr/local/include/poker-eval/inlines/eval_low8.h \
+  /usr/local/include/poker-eval/deck_std.h \
+  /usr/local/include/poker-eval/rules_std.h \
+  /usr/local/include/poker-eval/deck_std.h \
+  /usr/local/include/poker-eval/rules_std.h \
+  /usr/local/include/poker-eval/enumerate.h \
+  /usr/local/include/poker-eval/enumdefs.h \
+  /usr/local/include/poker-eval/enumord.h \
+  /usr/local/include/poker-eval/poker_defs.h
+
+/home/pokeit/include/python2.6/Python.h:
+
+/home/pokeit/include/python2.6/patchlevel.h:
+
+/home/pokeit/include/python2.6/pyconfig.h:
+
+/home/pokeit/include/python2.6/pymacconfig.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/limits.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-64.h:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/bits/local_lim.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/bits/posix2_lim.h:
+
+/usr/include/bits/xopen_lim.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/stdio.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h:
+
+/usr/include/bits/types.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/libio.h:
+
+/usr/include/_G_config.h:
+
+/usr/include/wchar.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/include/gconv.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h:
+
+/usr/include/bits/sys_errlist.h:
+
+/usr/include/string.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/errno.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/asm/errno.h:
+
+/usr/include/asm-x86_64/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/asm-generic/errno-base.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/bits/waitflags.h:
+
+/usr/include/bits/waitstatus.h:
+
+/usr/include/endian.h:
+
+/usr/include/bits/endian.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/time.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/bits/select.h:
+
+/usr/include/bits/sigset.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/sys/sysmacros.h:
+
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/alloca.h:
+
+/usr/include/unistd.h:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/bits/environments.h:
+
+/usr/include/bits/confname.h:
+
+/usr/include/getopt.h:
+
+/usr/include/assert.h:
+
+/home/pokeit/include/python2.6/pyport.h:
+
+/usr/include/stdint.h:
+
+/usr/include/math.h:
+
+/usr/include/bits/huge_val.h:
+
+/usr/include/bits/huge_valf.h:
+
+/usr/include/bits/huge_vall.h:
+
+/usr/include/bits/inf.h:
+
+/usr/include/bits/nan.h:
+
+/usr/include/bits/mathdef.h:
+
+/usr/include/bits/mathcalls.h:
+
+/usr/include/sys/time.h:
+
+/usr/include/sys/stat.h:
+
+/usr/include/bits/stat.h:
+
+/home/pokeit/include/python2.6/pymath.h:
+
+/home/pokeit/include/python2.6/pymem.h:
+
+/home/pokeit/include/python2.6/object.h:
+
+/home/pokeit/include/python2.6/objimpl.h:
+
+/home/pokeit/include/python2.6/pydebug.h:
+
+/home/pokeit/include/python2.6/unicodeobject.h:
+
+/usr/include/ctype.h:
+
+/home/pokeit/include/python2.6/intobject.h:
+
+/home/pokeit/include/python2.6/boolobject.h:
+
+/home/pokeit/include/python2.6/longobject.h:
+
+/home/pokeit/include/python2.6/floatobject.h:
+
+/home/pokeit/include/python2.6/complexobject.h:
+
+/home/pokeit/include/python2.6/rangeobject.h:
+
+/home/pokeit/include/python2.6/stringobject.h:
+
+/home/pokeit/include/python2.6/bufferobject.h:
+
+/home/pokeit/include/python2.6/bytesobject.h:
+
+/home/pokeit/include/python2.6/bytearrayobject.h:
+
+/home/pokeit/include/python2.6/tupleobject.h:
+
+/home/pokeit/include/python2.6/listobject.h:
+
+/home/pokeit/include/python2.6/dictobject.h:
+
+/home/pokeit/include/python2.6/enumobject.h:
+
+/home/pokeit/include/python2.6/setobject.h:
+
+/home/pokeit/include/python2.6/methodobject.h:
+
+/home/pokeit/include/python2.6/moduleobject.h:
+
+/home/pokeit/include/python2.6/funcobject.h:
+
+/home/pokeit/include/python2.6/classobject.h:
+
+/home/pokeit/include/python2.6/fileobject.h:
+
+/home/pokeit/include/python2.6/cobject.h:
+
+/home/pokeit/include/python2.6/traceback.h:
+
+/home/pokeit/include/python2.6/sliceobject.h:
+
+/home/pokeit/include/python2.6/cellobject.h:
+
+/home/pokeit/include/python2.6/iterobject.h:
+
+/home/pokeit/include/python2.6/genobject.h:
+
+/home/pokeit/include/python2.6/descrobject.h:
+
+/home/pokeit/include/python2.6/warnings.h:
+
+/home/pokeit/include/python2.6/weakrefobject.h:
+
+/home/pokeit/include/python2.6/codecs.h:
+
+/home/pokeit/include/python2.6/pyerrors.h:
+
+/home/pokeit/include/python2.6/pystate.h:
+
+/home/pokeit/include/python2.6/pyarena.h:
+
+/home/pokeit/include/python2.6/modsupport.h:
+
+/home/pokeit/include/python2.6/pythonrun.h:
+
+/home/pokeit/include/python2.6/ceval.h:
+
+/home/pokeit/include/python2.6/sysmodule.h:
+
+/home/pokeit/include/python2.6/intrcheck.h:
+
+/home/pokeit/include/python2.6/import.h:
+
+/home/pokeit/include/python2.6/abstract.h:
+
+/home/pokeit/include/python2.6/compile.h:
+
+/home/pokeit/include/python2.6/code.h:
+
+/home/pokeit/include/python2.6/eval.h:
+
+/home/pokeit/include/python2.6/pystrtod.h:
+
+/home/pokeit/include/python2.6/pystrcmp.h:
+
+/home/pokeit/include/python2.6/pyfpe.h:
+
+/usr/local/include/poker-eval/poker_defs.h:
+
+/usr/local/include/poker-eval/poker_config.h:
+
+/usr/include/inttypes.h:
+
+/usr/local/include/poker-eval/deck.h:
+
+/usr/local/include/poker-eval/pokereval_export.h:
+
+/usr/local/include/poker-eval/handval.h:
+
+/usr/local/include/poker-eval/handval_low.h:
+
+/usr/local/include/poker-eval/enumerate.h:
+
+/usr/local/include/poker-eval/combinations.h:
+
+/usr/local/include/poker-eval/game_std.h:
+
+/usr/local/include/poker-eval/deck_std.h:
+
+/usr/local/include/poker-eval/rules_std.h:
+
+/usr/local/include/poker-eval/pokereval_export.h:
+
+/usr/local/include/poker-eval/inlines/eval.h:
+
+/usr/local/include/poker-eval/poker_defs.h:
+
+/usr/local/include/poker-eval/inlines/eval_low.h:
+
+/usr/local/include/poker-eval/handval_low.h:
+
+/usr/local/include/poker-eval/inlines/eval_low8.h:
+
+/usr/local/include/poker-eval/inlines/eval_joker_low.h:
+
+/usr/local/include/poker-eval/deck_joker.h:
+
+/usr/local/include/poker-eval/inlines/eval_low.h:
+
+/usr/local/include/poker-eval/inlines/eval_omaha.h:
+
+/usr/local/include/poker-eval/inlines/eval.h:
+
+/usr/local/include/poker-eval/inlines/eval_low8.h:
+
+/usr/local/include/poker-eval/deck_std.h:
+
+/usr/local/include/poker-eval/rules_std.h:
+
+/usr/local/include/poker-eval/deck_std.h:
+
+/usr/local/include/poker-eval/rules_std.h:
+
+/usr/local/include/poker-eval/enumerate.h:
+
+/usr/local/include/poker-eval/enumdefs.h:
+
+/usr/local/include/poker-eval/enumord.h:
+
+/usr/local/include/poker-eval/poker_defs.h:

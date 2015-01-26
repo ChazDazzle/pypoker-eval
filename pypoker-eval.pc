@@ -1,0 +1,9 @@
+# pkg-config source file
+
+prefix=/home/pokeit
+exec_prefix=/home/pokeit
+
+Name: pypoker-eval
+Description: python adaptor for the poker-eval toolkit
+Version: 138.0
+Conflicts:
