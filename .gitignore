@@ -13,3 +13,8 @@
 *.dylib
 *.pyc
 *.vcproj
+*.log
+*.status
+.deps
+libtool
+Makefile
