@@ -16239,7 +16239,7 @@ fi
       # VERSION.
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for a Python interpreter with version $required_version" >&5
 $as_echo_n "checking for a Python interpreter with version $required_version... " >&6; }
-      for am_cv_pathless_PYTHON in python2.7 python2.6 python2.5 python2.4 python2.7 none; do
+      for am_cv_pathless_PYTHON in python2.7 python2.6 python2.5 python2.4 python2.3 none; do
 	  test "$am_cv_pathless_PYTHON" = none && break
 	  prog="import sys, string
 if '$required_version' == '': sys.exit(0)
