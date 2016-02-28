@@ -16165,13 +16165,6 @@ fi
 
 
 if test -f "$PYTHON" ; then found_one=$PYTHON ; PYTHONS="$PYTHON $PYTHONS" ; fi
-PYTHON=$found_one
-if ! test "$found_one" ; then
-   as_fn_error $? "No python development environments found" "$LINENO" 5
-fi
-
-
-if test -f "$PYTHON" ; then found_one=$PYTHON ; PYTHONS="$PYTHON $PYTHONS" ; fi
 unset PYTHON
 
 
@@ -16535,6 +16528,13 @@ fi
 else
   PYTHON_2_7_TRUE='#'
   PYTHON_2_7_FALSE=
+fi
+
+
+if test -f "$PYTHON" ; then found_one=$PYTHON ; PYTHONS="$PYTHON $PYTHONS" ; fi
+PYTHON=$found_one
+if ! test "$found_one" ; then
+   as_fn_error $? "No python development environments found" "$LINENO" 5
 fi
 
 # Check for poker-eval
