@@ -48,6 +48,10 @@ pockets = [ ["As", "Ad", "Ac", "Tc", "Ts", "2d", "5c" ],
             [255, 255 ] ]
 print "stud7 (1) result = %s\n" % pokereval.winners(game = "7stud", pockets = pockets, dead = [], board = [])
 
+print ""
+pockets = [ ['7c', '2h', '3s', '6d', 'Ac'], ['3d', '4h', '5s', '2d', '2c'], ['Ah', '4d', '3h', '6h', '7d']]
+print "lowball (1) result = %s\n" % pokereval.winners(game = "lowball", pockets = pockets, dead = [], board = [])
+
 pockets = [[22, 18, 21, 3, 41, 1, 30], [39, 255, 255, 15, 13, 17, 255]]
 print "stud7 (2) result = %s\n" % pokereval.winners(game = "7stud", pockets = pockets, dead = [], board = [])
 

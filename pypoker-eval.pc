@@ -1,7 +1,7 @@
 # pkg-config source file
 
-prefix=/home/pokeit
-exec_prefix=/home/pokeit
+prefix=/usr
+exec_prefix=/usr
 
 Name: pypoker-eval
 Description: python adaptor for the poker-eval toolkit

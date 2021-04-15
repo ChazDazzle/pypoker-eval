@@ -370,6 +370,10 @@ pyenumExhaustive(enum_game_t game, StdDeck_CardMask pockets[],
     DECK_ENUMERATE_COMBINATIONS_D(StdDeck, cardsDealt,
                                   sizeToDeal, numToDeal,
                                   dead, INNER_LOOP_LOWBALL27);
+  } else if (game == game_lowball) {
+    DECK_ENUMERATE_COMBINATIONS_D(StdDeck, cardsDealt,
+                                  sizeToDeal, numToDeal,
+                                  dead, INNER_LOOP_LOWBALL);
   } else {
     return 1;
   }
@@ -436,6 +440,10 @@ pyenumSample(enum_game_t game, StdDeck_CardMask pockets[],
     DECK_MONTECARLO_PERMUTATIONS_D(StdDeck, cardsDealt,
 				   sizeToDeal, numToDeal,
 				   dead, iterations, INNER_LOOP_LOWBALL27);
+  } else if (game == game_lowball) {
+    DECK_MONTECARLO_PERMUTATIONS_D(StdDeck, cardsDealt,
+				   sizeToDeal, numToDeal,
+				   dead, iterations, INNER_LOOP_LOWBALL);
   } else {
     return 1;
   }
