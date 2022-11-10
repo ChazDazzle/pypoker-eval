@@ -11,3 +11,8 @@ For more information about the functions provided, check the
 documentation of the PokerEval class in the pokereval.py file.
 
 Loic Dachary <loic@dachary.org>
+
+compiling for python3
+gcc -shared -o pokereval.o -fPIC pypokereval.c -I /usr/local/include/poker-eval -I /usr/include/python3.9
+gcc -shared -o libpokereval.so pokereval.o
+

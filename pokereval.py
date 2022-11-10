@@ -26,9 +26,8 @@
 #
 # 
 import sys
-_pokereval = __import__('_pokereval_' + sys.version[0] + '_' + sys.version[2])
-
-from types import *
+#_pokereval = __import__('pokereval_3_9.so')
+import pokereval_3_9
 
 class PokerEval:
     """\
@@ -154,7 +153,7 @@ o.winners(game = 'holdem', pockets = [ [ 'Ks', 'Kd'] ]).
         normalized_pockets = []
         normalized_index = 0
         pockets = kwargs["pockets"][:]
-        for index in xrange(len(pockets)):
+        for index in range(len(pockets)):
             if not kwargs.has_key("fill_pockets"):
                 if 255 in pockets[index] or "__" in pockets[index]:
                     pockets[index] = []
@@ -169,7 +168,7 @@ o.winners(game = 'holdem', pockets = [ [ 'Ks', 'Kd'] ]).
 
         (count, haslopot, hashipot) = results.pop(0)
         winners = { 'low': [], 'hi': [] }
-        for index in xrange(len(pockets)):
+        for index in range(len(pockets)):
             if index2index.has_key(index):
                 result = results[index2index[index]]
                 if result[1] == 1 or result[3] == 1:
@@ -297,7 +296,7 @@ The "cards" argument may be either a list in which case a converted list
 is returned or a string in which case the corresponding number is
 returned.
 """
-        if type(cards) is ListType or type(cards) is TupleType:
+        if type(cards) is list or type(cards) is tuple:
             return [ _pokereval.string2card(card) for card in cards ]
         else:
             return _pokereval.string2card(cards)
@@ -325,7 +324,7 @@ The "cards" argument may be either a list in which case a converted list
 is returned or an integer in which case the corresponding string is
 returned.
 """
-        if type(cards) is ListType or type(cards) is TupleType:
+        if type(cards) is list or type(cards) is tuple:
             return [ _pokereval.card2string(card) for card in cards ]
         else:
             return _pokereval.card2string(cards)
