@@ -40,37 +40,22 @@ _pokereval_2_7_la_LIBADD = ${PYTHON2_7_LIBS} ${POKER_EVAL_LIBS}
 _pokereval_2_7_la_CFLAGS = ${PYTHON2_7_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"2_7\" -D'VERSION_NAME(w)=w\#\#2_7'
 endif
 
-if PYTHON_2_6
-py2_6exec_LTLIBRARIES = _pokereval_2_6.la
-_pokereval_2_6_la_SOURCES = pypokereval.c
-_pokereval_2_6_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
-_pokereval_2_6_la_LIBADD = ${PYTHON2_6_LIBS} ${POKER_EVAL_LIBS}
-_pokereval_2_6_la_CFLAGS = ${PYTHON2_6_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"2_6\" -D'VERSION_NAME(w)=w\#\#2_6'
+if PYTHON_3_8
+py3_8exec_LTLIBRARIES = _pokereval_3_8.la
+_pokereval_3_8_la_SOURCES = pypokereval.c
+_pokereval_3_8_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
+_pokereval_3_8_la_LIBADD = ${PYTHON3_8_LIBS} ${POKER_EVAL_LIBS}
+_pokereval_3_8_la_CFLAGS = ${PYTHON3_8_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"3_8\" -D'VERSION_NAME(w)=w\#\#3_8'
 endif
 
-if PYTHON_2_5
-py2_5exec_LTLIBRARIES = _pokereval_2_5.la
-_pokereval_2_5_la_SOURCES = pypokereval.c
-_pokereval_2_5_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
-_pokereval_2_5_la_LIBADD = ${PYTHON2_5_LIBS} ${POKER_EVAL_LIBS}
-_pokereval_2_5_la_CFLAGS = ${PYTHON2_5_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"2_5\" -D'VERSION_NAME(w)=w\#\#2_5'
+if PYTHON_3_9
+py3_9exec_LTLIBRARIES = _pokereval_3_9.la
+_pokereval_3_9_la_SOURCES = pypokereval.c
+_pokereval_3_9_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
+_pokereval_3_9_la_LIBADD = ${PYTHON3_9_LIBS} ${POKER_EVAL_LIBS}
+_pokereval_3_9_la_CFLAGS = ${PYTHON3_9_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"3_9\" -D'VERSION_NAME(w)=w\#\#3_9'
 endif
 
-if PYTHON_2_4
-py2_4exec_LTLIBRARIES = _pokereval_2_4.la
-_pokereval_2_4_la_SOURCES = pypokereval.c
-_pokereval_2_4_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
-_pokereval_2_4_la_LIBADD = ${PYTHON2_4_LIBS} ${POKER_EVAL_LIBS}
-_pokereval_2_4_la_CFLAGS = ${PYTHON2_4_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"2_4\" -D'VERSION_NAME(w)=w\#\#2_4'
-endif
-
-if PYTHON_2_3
-py2_3exec_LTLIBRARIES = _pokereval_2_3.la
-_pokereval_2_3_la_SOURCES = pypokereval.c
-_pokereval_2_3_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
-_pokereval_2_3_la_LIBADD = ${PYTHON2_3_LIBS} ${POKER_EVAL_LIBS}
-_pokereval_2_3_la_CFLAGS = ${PYTHON2_3_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"2_3\" -D'VERSION_NAME(w)=w\#\#2_3'
-endif
 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = pypoker-eval.pc

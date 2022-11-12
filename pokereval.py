@@ -26,8 +26,14 @@
 #
 # 
 import sys
-#_pokereval = __import__('pokereval_3_9.so')
-import pokereval_3_9
+import os,ctypes
+basedir = "/usr/local/lib/python3.9/site-packages/"
+libpath = os.path.join(basedir, '_pokereval_3_9.so')
+dll = ctypes.CDLL(libpath)
+_pokereval = dll
+
+from types import *
+#import _pokereval_3_9
 
 class PokerEval:
     """\

@@ -42,8 +42,8 @@ AC_DEFUN([AM_PATH_PYTHON],
   dnl $prefix/lib/site-python in 1.4 to $prefix/lib/python1.5/site-packages
   dnl in 1.5.
   m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
-                      [python python2 python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 dnl
-python2.1 python2.0 python1.6 python1.5])
+[python python2 python3 python3.10 python3.9 python3.8 python3.0 python2.7 dnl
+ python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
 
   m4_if([$1],[],[
     dnl No version check is needed.
@@ -98,7 +98,7 @@ python2.1 python2.0 python1.6 python1.5])
   dnl library.
 
   AC_MSG_CHECKING([for $am_display_PYTHON version])
-  am_cv_python_version=`$PYTHON -c "import sys; print sys.version[[:3]]"`
+  am_cv_python_version=`$PYTHON -c "import sys; print (sys.version[[:3]])"`
   AC_MSG_RESULT([done])
   AC_SUBST([PYTHON_VERSION], [$am_cv_python_version])
 
@@ -114,7 +114,7 @@ python2.1 python2.0 python1.6 python1.5])
   dnl to know which OS platform Python thinks this is.
 
   AC_MSG_CHECKING([for $am_display_PYTHON platform])
-  am_cv_python_platform=`$PYTHON -c "import sys; print sys.platform"`
+  am_cv_python_platform=`$PYTHON -c "import sys; print (sys.platform)"`
   AC_MSG_RESULT([done])
   AC_SUBST([PYTHON_PLATFORM], [$am_cv_python_platform])
 
@@ -129,7 +129,7 @@ python2.1 python2.0 python1.6 python1.5])
   dnl Python 1.5, so we fall back to the hardcoded directory if it
   dnl doesn't work.
   AC_MSG_CHECKING([for $am_display_PYTHON script directory])
-  am_cv_python_pythondir=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(0,0,prefix='$PYTHON_PREFIX')" 2>/dev/null ||
+  am_cv_python_pythondir=`$PYTHON -c "from distutils import sysconfig; print (sysconfig.get_python_lib(0,0,prefix='$PYTHON_PREFIX'))" 2>/dev/null ||
      echo "$PYTHON_PREFIX/lib/python$PYTHON_VERSION/site-packages"`
   AC_MSG_RESULT([done])
   AC_SUBST([pythondir], [$am_cv_python_pythondir])
@@ -146,7 +146,7 @@ python2.1 python2.0 python1.6 python1.5])
   dnl Python 1.5, so we fall back to the hardcoded directory if it
   dnl doesn't work.
   AC_MSG_CHECKING([for $am_display_PYTHON extension module directory])
-  am_cv_python_pyexecdir=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_python_lib(1,0,prefix='$PYTHON_EXEC_PREFIX')" 2>/dev/null ||
+  am_cv_python_pyexecdir=`$PYTHON -c "from distutils import sysconfig; print (sysconfig.get_python_lib(1,0,prefix='$PYTHON_EXEC_PREFIX'))" 2>/dev/null ||
      echo "${PYTHON_EXEC_PREFIX}/lib/python${PYTHON_VERSION}/site-packages"`
   AC_MSG_RESULT([done])
   AC_SUBST([pyexecdir], [$am_cv_python_pyexecdir])
@@ -178,33 +178,34 @@ unset am_cv_python_pyexecdir
 # Do *not* use the operator as it is not available in every supported 
 # python versions
 AC_DEFUN([AM_PYTHON_CHECK_VERSION],
- [prog="import sys, string
-if '$2' == '': sys.exit(0)
-spec = string.replace('$2', ' ', '')
-if spec[[:2]] == '<=':
-  version_string = spec[[2:]]
-elif spec[[:2]] == '>=':
-  version_string = spec[[2:]]
-elif spec[[:1]] == '=':
-  version_string = spec[[1:]]
-elif spec[[:1]] == '>':
-  version_string = spec[[1:]]
-elif spec[[:1]] == '<':
-  version_string = spec[[1:]]
-ver = map(int, string.split(version_string, '.'))
-syshexversion = sys.hexversion >> (8 * (4 - l""en(ver)))
+ [prog="import sys
+if '$required_version' == '': sys.exit(0)
+spec = str.replace('$required_version', ' ', '')
+if spec[:2] == '<=':
+  version_string = spec[2:]
+elif spec[:2] == '>=':
+  version_string = spec[2:]
+elif spec[:1] == '=':
+  version_string = spec[1:]
+elif spec[:1] == '>':
+  version_string = spec[1:]
+elif spec[:1] == '<':
+  version_string = spec[1:]
+ver = list(map(int, str.split(version_string, '.')))
+vermap = map(int, str.split(version_string, '.'))
+syshexversion = sys.hexversion >> (8 * (4 - l""en(list(ver))))
 verhex = 0
-for i in xrange(0, l""en(ver)): verhex = (verhex << 8) + ver[[i]]
-print 'sys.hexversion = 0x%08x, verhex = 0x%08x' % (syshexversion, verhex)
-if spec[[:2]] == '<=':
+for i in vermap: verhex = (verhex << 8) + i
+print (('sys.hexversion = 0x%08x, verhex = 0x%08x') % (syshexversion, verhex))
+if spec[:2] == '<=':
   status = syshexversion <= verhex
-elif spec[[:2]] == '>=':
+elif spec[:2] == '>=':
   status = syshexversion >= verhex
-elif spec[[:1]] == '=':
+elif spec[:1] == '=':
   status = syshexversion == verhex
-elif spec[[:1]] == '>':
+elif spec[:1] == '>':
   status = syshexversion > verhex
-elif spec[[:1]] == '<':
+elif spec[:1] == '<':
   status = syshexversion < verhex
 else:
   status = syshexversion >= verhex
