@@ -12,11 +12,21 @@ documentation of the PokerEval class in the pokereval.py file.
 
 Loic Dachary <loic@dachary.org>
 
-WIP 2022
+## WIP 2022
+
+rework makefiles for python3.8, python3.9
+
 compiling for python3
+```sh
 ./configure
 make
 sudo make install
+```
+
+update from minmax github 
+
+tested ok on python3.9
+
 
 
 
