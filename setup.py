@@ -34,7 +34,7 @@ core.setup(
         Extension(
             C_NAME,
             ['pypokereval.c'],
-            include_dirs = ['include', '/usr/local/include/poker-eval', '/usr/include/poker-eval'],
+            include_dirs = ['include', '/usr/local/include/poker-eval', '/usr/include/poker-eval','/usr/local/lib/python3.9/site-packages' ],   #add anaconda dir : sudo python setup.py build for inst on conda env
             libraries = ['poker-eval'],
             extra_link_args=['-L/usr/lib/x86_64-linux-gnu/'],
             define_macros = [
