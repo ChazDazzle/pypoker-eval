@@ -56,6 +56,14 @@ _pokereval_3_9_la_LIBADD = ${PYTHON3_9_LIBS} ${POKER_EVAL_LIBS}
 _pokereval_3_9_la_CFLAGS = ${PYTHON3_9_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"3_9\" -D'VERSION_NAME(w)=w\#\#3_9'
 endif
 
+if PYTHON_3_11
+py3_11exec_LTLIBRARIES = _pokereval_3_11.la
+_pokereval_3_11_la_SOURCES = pypokereval.c
+_pokereval_3_11_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
+_pokereval_3_11_la_LIBADD = ${PYTHON3_11_LIBS} ${POKER_EVAL_LIBS}
+_pokereval_3_11_la_CFLAGS = ${PYTHON3_11_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"3_11\" -D'VERSION_NAME(w)=w\#\#3_11'
+endif
+
 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = pypoker-eval.pc
