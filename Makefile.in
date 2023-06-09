@@ -80,10 +80,10 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(py2_7execdir)" \
-	"$(DESTDIR)$(py3_8execdir)" "$(DESTDIR)$(py3_9execdir)" \
+	"$(DESTDIR)$(py3_8execdir)" "$(DESTDIR)$(py3_9execdir)" "$(DESTDIR)$(py3_11execdir)"\
 	"$(DESTDIR)$(pythondir)" "$(DESTDIR)$(pkgconfigdir)"
 LTLIBRARIES = $(py2_7exec_LTLIBRARIES) \
-	$(py3_8exec_LTLIBRARIES) $(py3_9exec_LTLIBRARIES) 
+	$(py3_8exec_LTLIBRARIES) $(py3_9exec_LTLIBRARIES) $(py3_11exec_LTLIBRARIES) 
 am__DEPENDENCIES_1 =
 @PYTHON_2_7_TRUE@_pokereval_2_7_la_DEPENDENCIES =  \
 @PYTHON_2_7_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -118,6 +118,17 @@ _pokereval_3_9_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(_pokereval_3_9_la_CFLAGS) $(CFLAGS) \
 	$(_pokereval_3_9_la_LDFLAGS) $(LDFLAGS) -o $@
 @PYTHON_3_9_TRUE@am__pokereval_3_9_la_rpath = -rpath $(py3_9execdir)
+@PYTHON_3_11_TRUE@_pokereval_3_11_la_DEPENDENCIES =  \
+@PYTHON_3_11_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am___pokereval_3_11_la_SOURCES_DIST = pypokereval.c
+@PYTHON_3_11_TRUE@am__pokereval_3_11_la_OBJECTS =  \
+@PYTHON_3_11_TRUE@	_pokereval_3_11_la-pypokereval.lo
+_pokereval_3_11_la_OBJECTS = $(am__pokereval_3_11_la_OBJECTS)
+_pokereval_3_11_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(_pokereval_3_11_la_CFLAGS) $(CFLAGS) \
+	$(_pokereval_3_11_la_LDFLAGS) $(LDFLAGS) -o $@
+@PYTHON_3_11_TRUE@am__pokereval_3_11_la_rpath = -rpath $(py3_11execdir)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -132,10 +143,10 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(_pokereval_2_7_la_SOURCES) \
-	$(_pokereval_3_8_la_SOURCES) $(_pokereval_3_9_la_SOURCES)
+	$(_pokereval_3_8_la_SOURCES) $(_pokereval_3_9_la_SOURCES) $(_pokereval_3_11_la_SOURCES)
 DIST_SOURCES = $(am___pokereval_2_7_la_SOURCES_DIST) \
 	$(am___pokereval_3_8_la_SOURCES_DIST) \
-	$(am___pokereval_3_9_la_SOURCES_DIST)
+	$(am___pokereval_3_9_la_SOURCES_DIST) $(am___pokereval_3_11_la_SOURCES_DIST)
 py_compile = $(top_srcdir)/config/py-compile
 DATA = $(pkgconfig_DATA)
 ETAGS = etags
@@ -223,6 +234,8 @@ PYTHON3_8_CFLAGS = @PYTHON3_8_CFLAGS@
 PYTHON3_8_LIBS = @PYTHON3_8_LIBS@
 PYTHON3_9_CFLAGS = @PYTHON3_9_CFLAGS@
 PYTHON3_9_LIBS = @PYTHON3_9_LIBS@
+PYTHON3_11_CFLAGS = @PYTHON3_11_CFLAGS@
+PYTHON3_11_LIBS = @PYTHON3_11_LIBS@
 PYTHON_CFLAGS = @PYTHON_CFLAGS@
 PYTHON_EXEC_PREFIX = @PYTHON_EXEC_PREFIX@
 PYTHON_LIBS = @PYTHON_LIBS@
@@ -280,6 +293,7 @@ pdfdir = @pdfdir@
 pkgpy2_7execdir = @pkgpy2_7execdir@
 pkgpy3_8execdir = @pkgpy3_8execdir@
 pkgpy3_9execdir = @pkgpy3_9execdir@
+pkgpy3_11execdir = @pkgpy3_11execdir@
 pkgpyexecdir = @pkgpyexecdir@
 pkgpythondir = @pkgpythondir@
 prefix = @prefix@
@@ -288,6 +302,7 @@ psdir = @psdir@
 py2_7execdir = @py2_7execdir@
 py3_8execdir = @py3_8execdir@
 py3_9execdir = @py3_9execdir@
+py3_11execdir = @py3_11execdir@
 pyexecdir = @pyexecdir@
 python2_7clibdir = @python2_7clibdir@
 python2_7includedir = @python2_7includedir@
@@ -298,6 +313,9 @@ python3_8linkflags = @python3_8linkflags@
 python3_9clibdir = @python3_9clibdir@
 python3_9includedir = @python3_9includedir@
 python3_9linkflags = @python3_9linkflags@
+python3_11clibdir = @python3_11clibdir@
+python3_11includedir = @python3_11includedir@
+python3_11linkflags = @python3_11linkflags@
 pythondir = ${pyexecdir}
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
@@ -354,6 +372,11 @@ python_PYTHON = \
 @PYTHON_3_9_TRUE@_pokereval_3_9_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
 @PYTHON_3_9_TRUE@_pokereval_3_9_la_LIBADD = ${PYTHON3_9_LIBS} ${POKER_EVAL_LIBS}
 @PYTHON_3_9_TRUE@_pokereval_3_9_la_CFLAGS = ${PYTHON3_9_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"3_9\" -D'VERSION_NAME(w)=w\#\#3_9'
+@PYTHON_3_11_TRUE@py3_11exec_LTLIBRARIES = _pokereval_3_11.la
+@PYTHON_3_11_TRUE@_pokereval_3_11_la_SOURCES = pypokereval.c
+@PYTHON_3_11_TRUE@_pokereval_3_11_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
+@PYTHON_3_11_TRUE@_pokereval_3_11_la_LIBADD = ${PYTHON3_11_LIBS} ${POKER_EVAL_LIBS}
+@PYTHON_3_11_TRUE@_pokereval_3_11_la_CFLAGS = ${PYTHON3_11_CFLAGS} ${POKER_EVAL_CFLAGS} -DPYTHON_VERSION=\"3_11\" -D'VERSION_NAME(w)=w\#\#3_11'
 @PYTHON_3_8_TRUE@py3_8exec_LTLIBRARIES = _pokereval_3_8.la
 @PYTHON_3_8_TRUE@_pokereval_3_8_la_SOURCES = pypokereval.c
 @PYTHON_3_8_TRUE@_pokereval_3_8_la_LDFLAGS = -module -no-undefined -version-info 1:0:0
@@ -441,6 +464,8 @@ clean-py3_8execLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
+
+
 install-py3_9execLTLIBRARIES: $(py3_9exec_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(py3_9execdir)" || $(MKDIR_P) "$(DESTDIR)$(py3_9execdir)"
@@ -472,6 +497,42 @@ clean-py3_9execLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
+
+
+
+install-py3_11execLTLIBRARIES: $(py3_11exec_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	test -z "$(py3_11execdir)" || $(MKDIR_P) "$(DESTDIR)$(py3_11execdir)"
+	@list='$(py3_11exec_LTLIBRARIES)'; test -n "$(py3_11execdir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(py3_11execdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(py3_11execdir)"; \
+	}
+
+uninstall-py3_11execLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(py3_11exec_LTLIBRARIES)'; test -n "$(py3_11execdir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(py3_11execdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(py3_11execdir)/$$f"; \
+	done
+
+clean-py3_11execLTLIBRARIES:
+	-test -z "$(py3_11exec_LTLIBRARIES)" || rm -f $(py3_11exec_LTLIBRARIES)
+	@list='$(py3_11exec_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+
+
 
 install-py2_7execLTLIBRARIES: $(py2_7exec_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -510,7 +571,10 @@ _pokereval_3_9.la: $(_pokereval_3_9_la_OBJECTS) $(_pokereval_3_9_la_DEPENDENCIES
 	$(_pokereval_3_9_la_LINK) $(am__pokereval_3_9_la_rpath) $(_pokereval_3_9_la_OBJECTS) $(_pokereval_3_9_la_LIBADD) $(LIBS)
 _pokereval_3_8.la: $(_pokereval_3_8_la_OBJECTS) $(_pokereval_3_8_la_DEPENDENCIES) 
 	$(_pokereval_3_8_la_LINK) $(am__pokereval_3_8_la_rpath) $(_pokereval_3_8_la_OBJECTS) $(_pokereval_3_8_la_LIBADD) $(LIBS)
-	
+_pokereval_3_11.la: $(_pokereval_3_11_la_OBJECTS) $(_pokereval_3_11_la_DEPENDENCIES) 
+	$(_pokereval_3_11_la_LINK) $(am__pokereval_3_11_la_rpath) $(_pokereval_3_11_la_OBJECTS) $(_pokereval_3_11_la_LIBADD) $(LIBS)
+
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 
@@ -520,6 +584,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/_pokereval_3_8_la-pypokereval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/_pokereval_3_9_la-pypokereval.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/_pokereval_2_7_la-pypokereval.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/_pokereval_3_11_la-pypokereval.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -555,6 +620,14 @@ _pokereval_3_9_la-pypokereval.lo: pypokereval.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pypokereval.c' object='_pokereval_3_9_la-pypokereval.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(_pokereval_3_9_la_CFLAGS) $(CFLAGS) -c -o _pokereval_3_9_la-pypokereval.lo `test -f 'pypokereval.c' || echo '$(srcdir)/'`pypokereval.c
+
+_pokereval_3_11_la-pypokereval.lo: pypokereval.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(_pokereval_3_11_la_CFLAGS) $(CFLAGS) -MT _pokereval_3_11_la-pypokereval.lo -MD -MP -MF $(DEPDIR)/_pokereval_3_11_la-pypokereval.Tpo -c -o _pokereval_3_11_la-pypokereval.lo `test -f 'pypokereval.c' || echo '$(srcdir)/'`pypokereval.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/_pokereval_3_11_la-pypokereval.Tpo $(DEPDIR)/_pokereval_3_11_la-pypokereval.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pypokereval.c' object='_pokereval_3_11_la-pypokereval.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(_pokereval_3_11_la_CFLAGS) $(CFLAGS) -c -o _pokereval_3_11_la-pypokereval.lo `test -f 'pypokereval.c' || echo '$(srcdir)/'`pypokereval.c
+
 
 _pokereval_2_7_la-pypokereval.lo: pypokereval.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(_pokereval_2_7_la_CFLAGS) $(CFLAGS) -MT _pokereval_2_7_la-pypokereval.lo -MD -MP -MF $(DEPDIR)/_pokereval_2_7_la-pypokereval.Tpo -c -o _pokereval_2_7_la-pypokereval.lo `test -f 'pypokereval.c' || echo '$(srcdir)/'`pypokereval.c
@@ -926,7 +999,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(py2_7execdir)" "$(DESTDIR)$(py3_9execdir)" "$(DESTDIR)$(py3_8execdir)" "$(DESTDIR)$(pythondir)" "$(DESTDIR)$(pkgconfigdir)"; do \
+	for dir in "$(DESTDIR)$(py2_7execdir)" "$(DESTDIR)$(py3_11execdir)" "$(DESTDIR)$(py3_9execdir)" "$(DESTDIR)$(py3_8execdir)" "$(DESTDIR)$(pythondir)" "$(DESTDIR)$(pkgconfigdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -958,7 +1031,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-py2_7execLTLIBRARIES \
-	clean-py3_9execLTLIBRARIES clean-py3_8execLTLIBRARIES \
+	clean-py3_9execLTLIBRARIES clean-py3_8execLTLIBRARIES clean-py3_11execLTLIBRARIES\
 	mostlyclean-am
 
 distclean: distclean-am
@@ -987,7 +1060,7 @@ install-dvi: install-dvi-am
 install-dvi-am:
 
 install-exec-am: install-py2_7execLTLIBRARIES \
-	install-py3_9execLTLIBRARIES install-py3_8execLTLIBRARIES 
+	install-py3_9execLTLIBRARIES install-py3_8execLTLIBRARIES install-py3_11execLTLIBRARIES
 
 install-html: install-html-am
 
@@ -1030,14 +1103,14 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-pkgconfigDATA uninstall-py2_7execLTLIBRARIES \
-	uninstall-py3_9execLTLIBRARIES uninstall-py3_8execLTLIBRARIES \
+	uninstall-py3_9execLTLIBRARIES uninstall-py3_8execLTLIBRARIES uninstall-py3_11execLTLIBRARIES\
 	uninstall-pythonPYTHON
 
 .MAKE: check-am install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am am--refresh check check-TESTS check-am \
 	clean clean-generic clean-libtool clean-py2_7execLTLIBRARIES \
-	clean-py3_9execLTLIBRARIES \
+	clean-py3_9execLTLIBRARIES clean-py3_11execLTLIBRARIES\
 	clean-py3_8execLTLIBRARIES ctags dist dist-all dist-bzip2 \
 	dist-gzip dist-lzma dist-shar dist-tarZ dist-xz dist-zip \
 	distcheck distclean distclean-compile distclean-generic \
@@ -1048,14 +1121,14 @@ uninstall-am: uninstall-pkgconfigDATA uninstall-py2_7execLTLIBRARIES \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-pkgconfigDATA install-ps \
 	install-ps-am install-py2_7execLTLIBRARIES \
-	install-py3_9execLTLIBRARIES install-py3_8execLTLIBRARIES \
+	install-py3_9execLTLIBRARIES install-py3_8execLTLIBRARIES  install-py3_11execLTLIBRARIES\
     install-pythonPYTHON \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-pkgconfigDATA uninstall-py2_7execLTLIBRARIES \
-	uninstall-py3_9execLTLIBRARIES uninstall-py3_8execLTLIBRARIES \
+	uninstall-py3_9execLTLIBRARIES uninstall-py3_8execLTLIBRARIES uninstall-py3_11execLTLIBRARIES\
     uninstall-pythonPYTHON
 
 
