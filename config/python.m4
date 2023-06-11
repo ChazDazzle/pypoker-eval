@@ -42,8 +42,8 @@ AC_DEFUN([AM_PATH_PYTHON],
   dnl $prefix/lib/site-python in 1.4 to $prefix/lib/python1.5/site-packages
   dnl in 1.5.
   m4_define_default([_AM_PYTHON_INTERPRETER_LIST],
-[python python2 python3 python3.11 python3.9 python3.8 python3.0 python2.7 dnl
- python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0])
+                      [python python2 python3.11 python3.8 python2.5 python2.4 python2.3 python2.2 dnl
+python2.1 python2.0 python1.6 python1.5])
 
   m4_if([$1],[],[
     dnl No version check is needed.
@@ -179,33 +179,33 @@ unset am_cv_python_pyexecdir
 # python versions
 AC_DEFUN([AM_PYTHON_CHECK_VERSION],
  [prog="import sys
-if '$required_version' == '': sys.exit(0)
-spec = str.replace('$required_version', ' ', '')
-if spec[:2] == '<=':
-  version_string = spec[2:]
-elif spec[:2] == '>=':
-  version_string = spec[2:]
-elif spec[:1] == '=':
-  version_string = spec[1:]
-elif spec[:1] == '>':
-  version_string = spec[1:]
-elif spec[:1] == '<':
-  version_string = spec[1:]
+if '$2' == '': sys.exit(0)
+spec = str.replace('$2', ' ', '')
+if spec[[:2]] == '<=':
+  version_string = spec[[2:]]
+elif spec[[:2]] == '>=':
+  version_string = spec[[2:]]
+elif spec[[:1]] == '=':
+  version_string = spec[[1:]]
+elif spec[[:1]] == '>':
+  version_string = spec[[1:]]
+elif spec[[:1]] == '<':
+  version_string = spec[[1:]]
 ver = list(map(int, str.split(version_string, '.')))
 vermap = map(int, str.split(version_string, '.'))
 syshexversion = sys.hexversion >> (8 * (4 - l""en(list(ver))))
 verhex = 0
 for i in vermap: verhex = (verhex << 8) + i
 print (('sys.hexversion = 0x%08x, verhex = 0x%08x') % (syshexversion, verhex))
-if spec[:2] == '<=':
+if spec[[:2]] == '<=':
   status = syshexversion <= verhex
-elif spec[:2] == '>=':
+elif spec[[:2]] == '>=':
   status = syshexversion >= verhex
-elif spec[:1] == '=':
+elif spec[[:1]] == '=':
   status = syshexversion == verhex
-elif spec[:1] == '>':
+elif spec[[:1]] == '>':
   status = syshexversion > verhex
-elif spec[:1] == '<':
+elif spec[[:1]] == '<':
   status = syshexversion < verhex
 else:
   status = syshexversion >= verhex
@@ -215,3 +215,4 @@ if status:
 else:
   sys.exit(1)"
   AS_IF([AM_RUN_LOG([$1 -c "$prog"])], [$3], [$4])])
+

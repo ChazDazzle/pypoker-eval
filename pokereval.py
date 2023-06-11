@@ -26,7 +26,8 @@
 #
 # 
 import sys
-_pokereval = __import__('_pokereval_' + sys.version[0] + '_' + sys.version[2])
+#_pokereval = __import__('_pokereval_' + sys.version[0] + '_' + sys.version[2])
+_pokereval = __import__('_pokereval_3_11')
 
 if sys.version_info[0] < 3:
     from types import ListType, TupleType
