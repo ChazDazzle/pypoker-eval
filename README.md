@@ -12,9 +12,18 @@ documentation of the PokerEval class in the pokereval.py file.
 
 Loic Dachary <loic@dachary.org>
 
-## WIP 2022
+## WIP 2022-2023
 
-rework makefiles for python3.8, python3.9
+update from Tzerjen Wei github https://github.com/tjwei
+
+rework makefiles for python3.8,  ...
+
+work with python3.11 but this is bug to track (manually edit configure file: replace $PYTHON_VERSION per 3.11 in the dedicated code section )
+
+configure autoconf
+```sh
+autoconf
+```
 
 compiling for python3
 ```sh
@@ -23,14 +32,18 @@ make
 sudo make install
 ```
 
-update from minmax github 
+Some tips:
 
-add anaconda dir :
-```sh
- sudo python setup.py build for inst on conda env
-```
+The error message "gcc -shared .libs/_pokereval_3_8_la-pypokereval.o -L/home/jd/anaconda3/envs/pypoker-eval3.8/lib/python3.8/config-3.8-x86_64-linux-gnu -lpython3.8 -L/usr/local/lib /usr/local/lib/libpoker-eval.so -Wl,-soname -Wl,_pokereval_3_8.so.1 -o .libs/_pokereval_3_8.so.1.0.0 /usr/bin/ld: cannot find -lpython3.8: No such file or directory"  => think to install  install the development package exemple on ubuntu sudo apt-get install libpython3.8-dev
 
-tested ok on python3.9
+
+
+
+
+
+
+
+
 
 
 
