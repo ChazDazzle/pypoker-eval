@@ -33,20 +33,20 @@ if test "$PYTHON" ; then
     
     AC_CACHE_CHECK([for $am_display_PYTHON$2 include directory],
         [am_cv_python]$2[_includedir],
-        [am_cv_python]$2[_includedir=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_config_var('INCLUDEPY')" 2>/dev/null ||
+        [am_cv_python]$2[_includedir=`$PYTHON -c "from distutils import sysconfig; print (sysconfig.get_config_var('INCLUDEPY'))" 2>/dev/null ||
          echo "$PYTHON_PREFIX/include/python$PYTHON_VERSION"`])
       AC_SUBST([python]$2[includedir], [$am_cv_python]$2[_includedir])
     
     AC_CACHE_CHECK([for $am_display_PYTHON C libraries directory],
         [am_cv_python]$2[_clibdir],
-        [am_cv_python]$2[_clibdir=`$PYTHON -c "from distutils import sysconfig; print sysconfig.get_config_var('LIBPL')" 2>/dev/null ||
+        [am_cv_python]$2[_clibdir=`$PYTHON -c "from distutils import sysconfig; print (sysconfig.get_config_var('LIBPL'))" 2>/dev/null ||
          echo "$PYTHON_PREFIX/lib/python$PYTHON_VERSION/config"`])
       AC_SUBST([python]$2[clibdir], [$am_cv_python]$2[_clibdir])
     
     AC_CACHE_CHECK([for $am_display_PYTHON link flags],
         [am_cv_python]$2[_linkflags],
         [
-            am_cv_python]$2[_linkflags=`$PYTHON -c "from distutils import sysconfig; print '-L' + sysconfig.get_config_var('LIBPL')" 2>/dev/null || echo "-L$PYTHON_PREFIX/lib/python$PYTHON_VERSION/config"`
+            am_cv_python]$2[_linkflags=`$PYTHON -c "from distutils import sysconfig; print ('-L' + sysconfig.get_config_var('LIBPL'))" 2>/dev/null || echo "-L$PYTHON_PREFIX/lib/python$PYTHON_VERSION/config"`
             am_cv_python]$2[_linkflags="$am_cv_python]$2[_linkflags -lpython$PYTHON_VERSION"
      ])
       AC_SUBST([python]$2[linkflags], [$am_cv_python]$2[_linkflags])
@@ -110,7 +110,7 @@ AM_CONDITIONAL([PYTHON_]$2, [test "$have_python" != "no"])
 
 AC_DEFUN([ALL_CC_PYTHON],
 [ 
-m4_define([_AM_PYTHON_INTERPRETER_LIST], [python2.7 python2.6 python2.5 python2.4 python2.3])
+m4_define([_AM_PYTHON_INTERPRETER_LIST], [python3.11 python3.8 python2.5 python2.4 python2.3])
 PYTHONS=''
 found_one=''
 _ONE_CC_PYTHON([=2.3], [2_3])
@@ -122,10 +122,10 @@ unset PYTHON
 _ONE_CC_PYTHON([=2.5], [2_5])
 if test -f "$PYTHON" ; then found_one=$PYTHON ; PYTHONS="$PYTHON $PYTHONS" ; fi
 unset PYTHON
-_ONE_CC_PYTHON([=2.6], [2_6])
+_ONE_CC_PYTHON([=3.8], [3_8])
 if test -f "$PYTHON" ; then found_one=$PYTHON ; PYTHONS="$PYTHON $PYTHONS" ; fi
 unset PYTHON
-_ONE_CC_PYTHON([=2.7], [2_7])
+_ONE_CC_PYTHON([=3.11], [3_11])
 if test -f "$PYTHON" ; then found_one=$PYTHON ; PYTHONS="$PYTHON $PYTHONS" ; fi
 PYTHON=$found_one
 if ! test "$found_one" ; then
