@@ -18,8 +18,7 @@
 # http://gna.org/support/?1823
 #
 import sys
-sys.path.insert(0, ".")
-sys.path.insert(0, ".libs")
+sys.path.insert(0, "/build")
 
 from pokereval import PokerEval
 

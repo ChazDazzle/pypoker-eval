@@ -34,26 +34,7 @@
 #else
  #include <Python.h>
 #endif
-#include <bytesobject.h>
 
-#if PY_MAJOR_VERSION >= 3
- #define IS_PY3K
-#endif
-
-struct module_state {
-	PyObject *error;
-};
-
-#ifdef IS_PY3K
- #define GETSTATE(m) ((struct module_state*)PyModule_GetState(m))
- #define PyInteger_Check PyLong_Check
- #define PyInteger_AsLong PyLong_AsLong
-#else
- #define GETSTATE(m) (&_state)
- static struct module_state _state;
- #define PyInteger_Check PyInt_Check
- #define PyInteger_AsLong PyInt_AsLong
-#endif
 
 /* enumerate.c -- functions to compute pot equity by enumerating outcomes
   Exports:
@@ -80,8 +61,8 @@ struct module_state {
 #include "enumdefs.h"
 
 #ifdef WIN32
-#define VERSION_NAME(W) W##2_4
-#define PYTHON_VERSION "2_4"
+#define VERSION_NAME(W) W##3_11
+#define PYTHON_VERSION "3_11"
 #endif /* WIN32 */
 
 /* INNER_LOOP is executed in every iteration of the combinatorial enumerator
@@ -306,7 +287,7 @@ struct module_state {
     err = 0;								\
   })
 
-static int
+static int 
 pyenumExhaustive(enum_game_t game, StdDeck_CardMask pockets[],
 		 int numToDeal[],
                StdDeck_CardMask board, StdDeck_CardMask dead,
@@ -322,7 +303,7 @@ pyenumExhaustive(enum_game_t game, StdDeck_CardMask pockets[],
     totalToDeal += numToDeal[i];
 
   /*
-   * Cards in pockets or in the board must not be dealt
+   * Cards in pockets or in the board must not be dealt 
    */
   StdDeck_CardMask_OR(dead, dead, board);
   for(i = 0; i < sizeToDeal - 1; i++) {
@@ -389,6 +370,10 @@ pyenumExhaustive(enum_game_t game, StdDeck_CardMask pockets[],
     DECK_ENUMERATE_COMBINATIONS_D(StdDeck, cardsDealt,
                                   sizeToDeal, numToDeal,
                                   dead, INNER_LOOP_LOWBALL27);
+  } else if (game == game_lowball) {
+    DECK_ENUMERATE_COMBINATIONS_D(StdDeck, cardsDealt,
+                                  sizeToDeal, numToDeal,
+                                  dead, INNER_LOOP_LOWBALL);
   } else {
     return 1;
   }
@@ -396,10 +381,10 @@ pyenumExhaustive(enum_game_t game, StdDeck_CardMask pockets[],
   result->game = game;
   result->nplayers = sizeToDeal - 1;
   result->sampleType = ENUM_EXHAUSTIVE;
-  return 0;
+  return 0;  
 }
 
-static int
+static int 
 pyenumSample(enum_game_t game, StdDeck_CardMask pockets[],
 		 int numToDeal[],
                StdDeck_CardMask board, StdDeck_CardMask dead,
@@ -412,7 +397,7 @@ pyenumSample(enum_game_t game, StdDeck_CardMask pockets[],
     return 1;
 
   /*
-   * Cards in pockets or in the board must not be dealt
+   * Cards in pockets or in the board must not be dealt 
    */
   StdDeck_CardMask_OR(dead, dead, board);
   for(i = 0; i < sizeToDeal - 1; i++) {
@@ -455,6 +440,10 @@ pyenumSample(enum_game_t game, StdDeck_CardMask pockets[],
     DECK_MONTECARLO_PERMUTATIONS_D(StdDeck, cardsDealt,
 				   sizeToDeal, numToDeal,
 				   dead, iterations, INNER_LOOP_LOWBALL27);
+  } else if (game == game_lowball) {
+    DECK_MONTECARLO_PERMUTATIONS_D(StdDeck, cardsDealt,
+				   sizeToDeal, numToDeal,
+				   dead, iterations, INNER_LOOP_LOWBALL);
   } else {
     return 1;
   }
@@ -462,7 +451,7 @@ pyenumSample(enum_game_t game, StdDeck_CardMask pockets[],
   result->game = game;
   result->nplayers = sizeToDeal - 1;
   result->sampleType = ENUM_SAMPLE;
-  return 0;
+  return 0;  
 }
 
 #define NOCARD 255
@@ -488,27 +477,19 @@ static int PyList2CardMask(PyObject* object, CardMask* cardsp)
     PyObject* pycard = PyList_GetItem(object, i);
     if(PyErr_Occurred())
       return -1;
-#ifdef IS_PY3K
+
     if(PyUnicode_Check(pycard)) {
-      PyObject * temp_bytes = PyUnicode_AsEncodedString(pycard, "ASCII", "strict");
-      if (temp_bytes == NULL) return -2;
-      char* card_string = PyBytes_AS_STRING(temp_bytes);
-      card_string = strdup(card_string);
-      Py_DECREF(temp_bytes);
-#else
-    if(PyString_Check(pycard)) {
-      char* card_string = PyString_AsString(pycard);
-#endif
-      if(!strcmp(card_string, "__")) {
+      const char* card_string = PyUnicode_AsUTF8(pycard);
+      if(!strcmp(strdup(card_string), "__")) {
 	card = 255;
       } else {
-	if(Deck_stringToCard(card_string, &card) == 0) {
-	  PyErr_Format(PyExc_RuntimeError, "card %s is not a valid card name", card_string);
+	if(Deck_stringToCard(strdup(card_string), &card) == 0) {
+	  PyErr_Format(PyExc_RuntimeError, "card %s is not a valid card name", strdup(card_string));
 	  return -1;
 	}
       }
-    } else if(PyInteger_Check(pycard)) {
-      card = PyInteger_AsLong(pycard);
+    } else if(PyLong_Check(pycard)) {
+      card = PyLong_AsLong(pycard);
       if(card != NOCARD && (card < 0 || card > StdDeck_N_CARDS)) {
 	PyErr_Format(PyExc_TypeError, "card value (%d) must be in the range [0-%d]", card, StdDeck_N_CARDS);
 	return -1;
@@ -529,7 +510,7 @@ static int PyList2CardMask(PyObject* object, CardMask* cardsp)
   return valid_cards_size;
 }
 
-#if 0
+
 static PyObject* CardMask2PyList(CardMask* cardmask)
 {
   PyObject* result = 0;
@@ -552,7 +533,7 @@ static PyObject* CardMask2PyList(CardMask* cardmask)
 
   return result;
 }
-#endif
+
 
 static char doc_poker_evaln[] =
 "EvalN";
@@ -658,7 +639,7 @@ CardMask2SortedPyList(CardMask hand, int low)
     Py_DECREF(pyvalue);
     return result;
   }
-
+  
   if(low) {
     handval = Hand_EVAL_LOW8(hand, 5);
   } else {
@@ -722,7 +703,7 @@ CardMask2SortedPyList(CardMask hand, int low)
 	PyList_Append(result, pyvalue);
 	Py_DECREF(pyvalue);
       }
-    }
+    }    
 
     if (StdRules_nSigCards[htype] >= 3) {
       int rank = HandVal_THIRD_CARD(handval);
@@ -857,7 +838,7 @@ OmahaHiLow8_Best(StdDeck_CardMask hole, StdDeck_CardMask board,
   return 0;
 }
 
-static char doc_eval_hand[] =
+static char doc_eval_hand[] = 
 "return the evaluation of the hand, either low or hi. Result is a list, first element hand value, second element the best 5 card hand as a list of card values.";
 
 static PyObject*
@@ -877,7 +858,7 @@ eval_hand(PyObject* self, PyObject *args)
   StdDeck_CardMask_RESET(best);
 
   if (!PyArg_ParseTuple(args, "sOO", &hilow_string, &pyhand, &pyboard))
-    return NULL;
+    return NULL; 
 
   if(!strcmp(hilow_string, "low"))
     low = 1;
@@ -919,7 +900,7 @@ eval_hand(PyObject* self, PyObject *args)
       best_handval = HandVal_NOTHING;
     }
 
-    ENUMERATE_N_CARDS_D(cards, 5, dead,
+    ENUMERATE_N_CARDS_D(cards, 5, dead, 
     {
       HandVal handval;
 
@@ -955,7 +936,7 @@ eval_hand(PyObject* self, PyObject *args)
   return result;
 }
 
-static char doc_poker_eval[] =
+static char doc_poker_eval[] = 
 "eval a poker game state";
 
 static PyObject*
@@ -980,9 +961,9 @@ poker_eval(PyObject* self, PyObject *args, PyObject *keywds)
 
   static char *kwlist[] = {"game", "pockets", "board", "dead", "fill_pockets", "iterations", NULL};
 
-  if (!PyArg_ParseTupleAndKeywords(args, keywds, "sOO|Oii", kwlist,
+  if (!PyArg_ParseTupleAndKeywords(args, keywds, "sOO|Oii", kwlist, 
 				   &game, &pypockets, &pyboard, &pydead, &fill_pockets, &iterations))
-    return NULL;
+    return NULL; 
 
   if(!strcmp(game, "holdem")) {
     params = enumGameParams(game_holdem);
@@ -1027,7 +1008,7 @@ poker_eval(PyObject* self, PyObject *args, PyObject *keywds)
       int count;
       CardMask_RESET(pockets[i]);
       PyObject* pypocket = PyList_GetItem(pypockets, i);
-      if(PyErr_Occurred())
+      if(PyErr_Occurred()) 
 	goto err;
 
       count = PyList2CardMask(pypocket, &pockets[i]);
@@ -1107,47 +1088,16 @@ static PyMethodDef base_methods[] = {
   {NULL, NULL, 0, NULL}
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef IS_PY3K
-static int base_traverse(PyObject *m, visitproc visit, void *arg){
-	Py_VISIT(GETSTATE(m)->error);
-	return 0;
-}
-static int base_clear(PyObject *m){
-	Py_CLEAR(GETSTATE(m)->error);
-	return 0;
-}
-static struct PyModuleDef moduledef = {
-	PyModuleDef_HEAD_INIT,
-	"_pokereval_",
-	NULL,
-	sizeof(struct module_state),
-	base_methods,
-	NULL,
-	base_traverse,
-	base_clear,
-	NULL
-};
-PyObject * VERSION_NAME(PyInit__pokereval_)(void) {
-  PyObject * module = PyModule_Create( &moduledef);
-  if(module == NULL) return NULL;
-  struct module_state *st = GETSTATE(module);
-  st->error = PyErr_NewException("_pokereval_.Error", NULL, NULL);
-  if(st->error == NULL){
-	  Py_DECREF(module);
-	  return NULL;
-  }
-  return module;
-}
-#else
-DL_EXPORT(void)
-VERSION_NAME(init_pokereval_)(void)
+static struct PyModuleDef pokereval_3_11 =
 {
-  Py_InitModule("_pokereval_" PYTHON_VERSION , base_methods);
+    PyModuleDef_HEAD_INIT,
+    "pokereval_3_11", /* name of module */
+    "",          /* module documentation, may be NULL */
+    -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+    base_methods
+};
+
+PyMODINIT_FUNC PyInit__pokereval_3_11(void)
+{
+    return PyModule_Create(&pokereval_3_11);
 }
-#endif
-#ifdef __cplusplus
-}
-#endif
