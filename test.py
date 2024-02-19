@@ -26,7 +26,7 @@
 #
 # 
 import sys
-sys.path.insert(0, "/build")
+#sys.path.insert(0, "/build")
 
 from pokereval import PokerEval
 
@@ -66,79 +66,109 @@ print("winners omaha8 = %s\n" % pokereval.winners(game = "omaha8", pockets = [ [
 
 hand = ["Ac", "As", "Td", "7s", "7h", "3s", "2c"]
 best_hand = pokereval.best_hand("hi", hand)
-print("best hand from %s = %s" % ( hand, pokereval.best_hand("hi", hand) ))
-print("best hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'best hand from {hand} = {pokereval.best_hand("hi", hand)}')
+print(
+    f"best hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 hand = ["Ah", "Ts", "Kh", "Qs", "Js" ]
 best_hand = pokereval.best_hand("hi", hand)
-print("best hand from %s = %s" % ( hand, pokereval.best_hand("hi", hand) ))
-print("best hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'best hand from {hand} = {pokereval.best_hand("hi", hand)}')
+print(
+    f"best hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 hand = ["2h", "Kh", "Qh", "Jh", "Th" ]
 best_hand = pokereval.best_hand("hi", hand)
-print("best hand from %s = %s" % ( hand, pokereval.best_hand("hi", hand) ))
-print("best hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'best hand from {hand} = {pokereval.best_hand("hi", hand)}')
+print(
+    f"best hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 hand = ['2s', '3s', 'Jd', 'Ks', 'As', '4d', '5h', '7d', '9c']
 best_hand = pokereval.best_hand("hi", hand)
-print("best hand from %s = %s" % ( hand, pokereval.best_hand("hi", hand) ))
-print("best hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'best hand from {hand} = {pokereval.best_hand("hi", hand)}')
+print(
+    f"best hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 hand = ['As', '2s', '4d', '4s', '5c', '5d', '7s']
 best_hand = pokereval.best_hand("low", hand)
-print("1/ low hand from %s = %s" % ( hand, pokereval.best("low", hand) ))
-print("best low hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'1/ low hand from {hand} = {pokereval.best("low", hand)}')
+print(
+    f"best low hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 hand = ['As', '2s', '4d', '4s', '5c', '5d', '8s']
 best_hand = pokereval.best_hand("low", hand)
-print("2/ low hand from %s = %s" % ( hand, pokereval.best("low", hand) ))
-print("best low hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'2/ low hand from {hand} = {pokereval.best("low", hand)}')
+print(
+    f"best low hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 hand = ['7d', '6c', '5h', '4d', 'As']
 best_hand = pokereval.best_hand("low", hand)
-print("3/ low hand from %s = %s" % ( hand, pokereval.best("low", hand) ))
-print("best low hand from %s = (%s) %s " % (hand, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'3/ low hand from {hand} = {pokereval.best("low", hand)}')
+print(
+    f"best low hand from {hand} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 board = [ 'As', '4d', '5h', '7d', '9c' ]
 hand = [ '2s', 'Ts', 'Jd', 'Ks' ]
 best_hand = pokereval.best_hand("low", hand, board)
-print("4/ low hand from %s / %s = %s" % ( hand, board, pokereval.best("low", hand, board) ))
-print("best low hand from %s / %s = (%s) %s " % (hand, board, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(
+    f'4/ low hand from {hand} / {board} = {pokereval.best("low", hand, board)}'
+)
+print(
+    f"best low hand from {hand} / {board} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 board = [ 'As', '4d', '6h', '7d', '3c' ]
 hand = [ '2s', '5s', 'Jd', 'Ks' ]
 best_hand = pokereval.best_hand("low", hand, board)
-print("low hand from %s / %s = %s" % ( hand, board, pokereval.best("low", hand, board) ))
-print("best low hand from %s / %s = (%s) %s " % (hand, board, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(f'low hand from {hand} / {board} = {pokereval.best("low", hand, board)}')
+print(
+    f"best low hand from {hand} / {board} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 board = [ 'Jc', '4c', '3c', '5c', '9c' ]
 hand = [ '2c', 'Ac', '5h', '9d' ]
 best_hand = pokereval.best_hand("hi", hand, board)
-print("hi hand from %s / %s = %s" % ( hand, board, pokereval.best("hi", hand, board) ))
-print("best hi hand from %s / %s = (%s) %s " % (hand, board, best_hand[0], pokereval.card2string(best_hand[1:])))
+print(f'hi hand from {hand} / {board} = {pokereval.best("hi", hand, board)}')
+print(
+    f"best hi hand from {hand} / {board} = ({best_hand[0]}) {pokereval.card2string(best_hand[1:])} "
+)
 
 print("")
 board = [ 'Jd', '9c', 'Jc', 'Tc', '2h' ]
 hand = [ '2c', '4c', 'Th', '6s' ]
 best_hand = pokereval.best_hand("low", hand, board)
-print("5/ low hand from %s / %s = %s" % ( hand, board, pokereval.best("low", hand, board) ))
-print("best low hand from %s / %s = (%s) %s " % (hand, board, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(
+    f'5/ low hand from {hand} / {board} = {pokereval.best("low", hand, board)}'
+)
+print(
+    f"best low hand from {hand} / {board} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 print("")
 board = [ 'Ks', 'Jd', '7s', '4d', 'Js' ]
 hand = [ '2d', '6c', 'Ac', '5c' ]
 best_hand = pokereval.best_hand("low", hand, board)
-print("6/ low hand from %s / %s = %s" % ( hand, board, pokereval.best("low", hand, board) ))
-print("best low hand from %s / %s = (%s) %s " % (hand, board, best_hand[0], [ pokereval.card2string(i) for i in best_hand[1:] ]))
+print(
+    f'6/ low hand from {hand} / {board} = {pokereval.best("low", hand, board)}'
+)
+print(
+    f"best low hand from {hand} / {board} = ({best_hand[0]}) {[pokereval.card2string(i) for i in best_hand[1:]]} "
+)
 
 if len(sys.argv) > 2:
 
@@ -174,4 +204,4 @@ print("")
 hand = ['Qc', '7d']
 print("handval %s = %d " % (hand, pokereval.evaln(hand)))
 
-pokereval = None
+pokereval = None   
