@@ -60,10 +60,7 @@
 #include "enumerate.h"
 #include "enumdefs.h"
 
-#ifdef WIN32
-#define VERSION_NAME(W) W##2_4
-#define PYTHON_VERSION "2_4"
-#endif /* WIN32 */
+/* PYTHON_VERSION is now defined by CMakeLists.txt based on actual Python version */
 
 /* INNER_LOOP is executed in every iteration of the combinatorial enumerator
    macros DECK_ENUMERATE_n_CARDS_D() and DECK_ENUMERATE_PERMUTATIONS_D.  It
@@ -478,18 +475,18 @@ static int PyList2CardMask(PyObject* object, CardMask* cardsp)
     if(PyErr_Occurred())
       return -1;
 
-    if(PyString_Check(pycard)) {
-      char* card_string = PyString_AsString(pycard);
-      if(!strcmp(card_string, "__")) {
+    if(PyUnicode_Check(pycard)) {
+      const char* card_string = PyUnicode_AsUTF8(pycard);
+      if(!strcmp(strdup(card_string), "__")) {
 	card = 255;
       } else {
-	if(Deck_stringToCard(card_string, &card) == 0) {
-	  PyErr_Format(PyExc_RuntimeError, "card %s is not a valid card name", card_string);
+	if(Deck_stringToCard(strdup(card_string), &card) == 0) {
+	  PyErr_Format(PyExc_RuntimeError, "card %s is not a valid card name", strdup(card_string));
 	  return -1;
 	}
       }
-    } else if(PyInt_Check(pycard)) {
-      card = PyInt_AsLong(pycard);
+    } else if(PyLong_Check(pycard)) {
+      card = PyLong_AsLong(pycard);
       if(card != NOCARD && (card < 0 || card > StdDeck_N_CARDS)) {
 	PyErr_Format(PyExc_TypeError, "card value (%d) must be in the range [0-%d]", card, StdDeck_N_CARDS);
 	return -1;
@@ -510,7 +507,7 @@ static int PyList2CardMask(PyObject* object, CardMask* cardsp)
   return valid_cards_size;
 }
 
-#if 0
+
 static PyObject* CardMask2PyList(CardMask* cardmask)
 {
   PyObject* result = 0;
@@ -533,7 +530,7 @@ static PyObject* CardMask2PyList(CardMask* cardmask)
 
   return result;
 }
-#endif
+
 
 static char doc_poker_evaln[] =
 "EvalN";
@@ -1088,14 +1085,22 @@ static PyMethodDef base_methods[] = {
   {NULL, NULL, 0, NULL}
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-DL_EXPORT(void)
-VERSION_NAME(init_pokereval_)(void)
+#define CONCAT(a, b) a##b
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+#define MODULE_NAME(version) CONCAT(pokereval_, version)
+#define INIT_FUNC_NAME(version) CONCAT(PyInit__pokereval_, version)
+
+static struct PyModuleDef MODULE_NAME(PYTHON_VERSION) =
 {
-  Py_InitModule("_pokereval_" PYTHON_VERSION , base_methods);
+    PyModuleDef_HEAD_INIT,
+    "_pokereval_" TOSTRING(PYTHON_VERSION), /* name of module */
+    "",          /* module documentation, may be NULL */
+    -1,          /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+    base_methods
+};
+
+PyMODINIT_FUNC INIT_FUNC_NAME(PYTHON_VERSION)(void)
+{
+    return PyModule_Create(&MODULE_NAME(PYTHON_VERSION));
 }
-#ifdef __cplusplus
-}
-#endif

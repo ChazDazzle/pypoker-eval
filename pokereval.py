@@ -26,9 +26,18 @@
 #
 # 
 import sys
-_pokereval = __import__('_pokereval_' + sys.version[0] + '_' + sys.version[2])
+_pokereval = __import__(f'_pokereval_{sys.version_info.major}_{sys.version_info.minor}_{sys.version_info.micro}')
+#_pokereval = __import__('_pokereval_' + sys.version[0] + '_' + sys.version[2])
+#_pokereval = __import__('_pokereval_3_11')
+#_pokereval = __import__('pokereval')
 
-from types import *
+
+
+if sys.version_info[0] < 3:
+    from types import ListType, TupleType
+else:
+    ListType, TupleType = list, tuple
+    xrange = range
 
 class PokerEval:
     """\
@@ -56,7 +65,7 @@ The string __ (two underscore) or the number 255 are placeholders
 meaning that the card is unknown.
 """
 
-    def best(self, side, hand, board = []):
+    def best(self, side, hand, board=None):
         """\
 Return the best five card combination that can be made with the cards
 listed in "hand" and, optionally, board. The "side" may be "hi" or
@@ -89,30 +98,36 @@ Examples:
 [475920, ['NoPair', 45, 29, 41, 39, 51]] is As, 8s, 5c, 4s, 2s 
 [268435455, ['Nothing']] means there is no qualifying low
 """
+        if board is None:
+            board = []
         if len(hand + board) >= 5:
             return _pokereval.eval_hand(side, hand, board)
         else:
             return False
 
-    def best_hand(self, side, hand, board = []):
+    def best_hand(self, side, hand, board=None):
         """\
 Return the best five card combination that can be made with the cards
 listed in "hand" and, optionaly, board. The "side" may be "hi" or
 "low". The returned value is the second element of the list returned
 by the "best" method.
 """
+        if board is None:
+            board = []
         if len(hand + board) >= 5:
             return _pokereval.eval_hand(side, hand, board)[1]
         else:
             return False
 
-    def best_hand_value(self, side, hand, board = []):
+    def best_hand_value(self, side, hand, board=None):
         """\
 Return the best five card combination that can be made with the cards
 listed in "hand" and, optionaly, board. The "side" may be "hi" or
 "low". The returned value is the first element of the list returned
 by the "best" method.
 """
+        if board is None:
+            board = []
         if len(hand + board) >= 5:
             return _pokereval.eval_hand(side, hand, board)[0]
         else:
@@ -155,9 +170,8 @@ o.winners(game = 'holdem', pockets = [ [ 'Ks', 'Kd'] ]).
         normalized_index = 0
         pockets = kwargs["pockets"][:]
         for index in xrange(len(pockets)):
-            if not kwargs.has_key("fill_pockets"):
-                if 255 in pockets[index] or "__" in pockets[index]:
-                    pockets[index] = []
+            if "fill_pockets" not in kwargs and (255 in pockets[index] or "__" in pockets[index]):
+                pockets[index] = []
 
             if pockets[index] != []:
                 normalized_pockets.append(pockets[index])
@@ -170,7 +184,7 @@ o.winners(game = 'holdem', pockets = [ [ 'Ks', 'Kd'] ]).
         (count, haslopot, hashipot) = results.pop(0)
         winners = { 'low': [], 'hi': [] }
         for index in xrange(len(pockets)):
-            if index2index.has_key(index):
+            if index in index2index:
                 result = results[index2index[index]]
                 if result[1] == 1 or result[3] == 1:
                     winners["hi"].append(index)
@@ -297,7 +311,7 @@ The "cards" argument may be either a list in which case a converted list
 is returned or a string in which case the corresponding number is
 returned.
 """
-        if type(cards) is ListType or type(cards) is TupleType:
+        if isinstance(cards, (ListType, TupleType)):
             return [ _pokereval.string2card(card) for card in cards ]
         else:
             return _pokereval.string2card(cards)
@@ -325,7 +339,7 @@ The "cards" argument may be either a list in which case a converted list
 is returned or an integer in which case the corresponding string is
 returned.
 """
-        if type(cards) is ListType or type(cards) is TupleType:
+        if isinstance(cards, (ListType, TupleType)):
             return [ _pokereval.card2string(card) for card in cards ]
         else:
             return _pokereval.card2string(cards)

@@ -1,0 +1,751 @@
+name: Build and Package Python Project with Python 3.11
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+      - development
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
+      - master
+      - development
+
+jobs:
+  # build-linux-arm:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Install build tools and dependencies (ARM64)
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y cmake make gcc-aarch64-linux-gnu g++-aarch64-linux-gnu python3.11 python3.11-dev
+
+  #     - name: Build the project (ARM64)
+  #       run: |
+  #         mkdir build-arm64
+  #         cd build-arm64
+  #         cmake -DCMAKE_TOOLCHAIN_FILE=../arm-toolchain.cmake -DPython3_EXECUTABLE=/usr/bin/python3.11 -DPython3_INCLUDE_DIR=/usr/include/python3.11 -DPython3_LIBRARY=/usr/lib/aarch64-linux-gnu/libpython3.11.so ..
+  #         make
+
+  #     - name: Make artifact executable (ARM64)
+  #       run: chmod +x build-arm64/*
+
+  #     - name: Create artifact package
+  #       run: |
+  #         cp pokereval.py build-arm64/
+  #         cp test.py build-arm64/
+  #         cp build-arm64/libpypokereval.so build-arm64/_pokereval_3_11.so
+
+  #     - name: Upload artifact 
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: poker-eval-linux-arm64
+  #         path: build-arm64/*
+
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        build-method: ['uv', 'python']
+    name: Linux Python ${{ matrix.python-version }} (${{ matrix.build-method }})
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v1
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake make
+
+      - name: Setup Python with uv
+        run: |
+          echo "Installing Python ${{ matrix.python-version }} with uv"
+          uv python install ${{ matrix.python-version }}
+
+          echo "Creating virtual environment with Python ${{ matrix.python-version }}"
+          uv venv --python ${{ matrix.python-version }} .venv
+
+          echo "Virtual environment created"
+          ls -la .venv/bin/python*
+
+          echo "Python version in venv:"
+          .venv/bin/python --version
+
+      - name: Build project and create wheel
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          set -e
+          echo "Building with build.sh for Python ${{ matrix.python-version }}"
+          echo "Using uv virtual environment"
+
+          # Activate uv virtual environment
+          source .venv/bin/activate
+
+          # Show which Python we're using
+          echo "Active Python: $(which python)"
+          echo "Python version: $(python --version)"
+
+          # Create symlinks for CMakeLists.txt detection
+          PYTHON_MAJOR_MINOR=$(echo "${{ matrix.python-version }}" | cut -d. -f1,2)
+          sudo ln -sf $(which python) /usr/bin/python${PYTHON_MAJOR_MINOR}
+
+          echo "Created symlink: /usr/bin/python${PYTHON_MAJOR_MINOR} -> $(which python)"
+
+          # Get the actual Python version installed by uv (e.g., 3.9.19)
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          echo "Actual Python version: $ACTUAL_PYTHON_VERSION"
+
+          # Use build.sh with the real version
+          ./build.sh $ACTUAL_PYTHON_VERSION --use-venv
+
+          # Debug wheel creation
+          echo "=== Post-build debug ==="
+          echo "Checking for dist directory and wheel files:"
+          ls -la dist/ || echo "No dist directory found"
+          echo "Checking for built extensions:"
+          ls -la _pokereval_*.so _pokereval_*.pyd || echo "No extension files found"
+
+          # Ensure dist directory exists and collect all wheels
+          mkdir -p dist
+          echo "Searching for all .whl files:"
+          find . -name "*.whl" -type f -exec echo "Found: {}" \;
+          find . -name "*.whl" -type f -not -path "./dist/*" -exec cp {} dist/ \; 2>/dev/null || true
+          echo "Final dist directory contents:"
+          ls -la dist/ || echo "Dist directory is empty"
+
+      - name: Validate artifacts
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          set -e
+          # Activate venv to get the actual Python version
+          source .venv/bin/activate
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          PYTHON_VER_FULL=$(echo "$ACTUAL_PYTHON_VERSION" | sed 's/\./_/g')
+
+          echo "=== Artifact Validation ==="
+          echo "Expected Python: ${{ matrix.python-version }}"
+          echo "Actual Python: $ACTUAL_PYTHON_VERSION"
+          echo "Build method: ${{ matrix.build-method }}"
+          echo "Expected extension: _pokereval_${PYTHON_VER_FULL}.so"
+
+          # Check if extension was built (new naming format)
+          if [ -f "_pokereval_${PYTHON_VER_FULL}.so" ]; then
+            echo "✅ Extension found: _pokereval_${PYTHON_VER_FULL}.so"
+            ls -la _pokereval_${PYTHON_VER_FULL}.so
+          else
+            echo "❌ Extension missing: _pokereval_${PYTHON_VER_FULL}.so"
+            echo "Available files:"
+            ls -la _pokereval_*.so || echo "No .so files found"
+            ls -la *.so || echo "No .so files in root"
+            exit 1
+          fi
+
+          # Check wheel was created
+          if [ -f dist/*.whl ]; then
+            echo "✅ Wheel created:"
+            ls -la dist/*.whl
+          else
+            echo "❌ Wheel missing"
+            echo "Available files in dist/:"
+            ls -la dist/ || echo "No dist directory"
+            exit 1
+          fi
+
+          # Basic import test with full version format
+          if command -v python${{ matrix.python-version }} >/dev/null 2>&1; then
+            echo "=== Testing import with Python ${{ matrix.python-version }} ==="
+            python${{ matrix.python-version }} -c "import sys; print(f'Using Python {sys.version}')"
+            python${{ matrix.python-version }} -c "import _pokereval_${PYTHON_VER_FULL}; print('✅ Extension imports OK')" || echo "⚠️  Extension import failed"
+          fi
+
+      - name: Debug before wheel upload
+        run: |
+          echo "=== Debug before wheel upload ==="
+          echo "Current directory contents:"
+          ls -la
+          echo "Dist directory contents:"
+          ls -la dist/ || echo "No dist directory"
+          echo "All .whl files:"
+          find . -name "*.whl" -type f || echo "No .whl files found"
+          echo "Working directory: $(pwd)"
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-linux-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: |
+            dist/*.whl
+            *.whl
+        if: always()
+
+      - name: Upload binary artifact (legacy)
+        run: |
+          # Get the actual Python version used for build
+          source .venv/bin/activate
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          PYTHON_VER_FULL=$(echo "$ACTUAL_PYTHON_VERSION" | sed 's/\./_/g')
+
+          echo "Creating legacy build with actual version: $ACTUAL_PYTHON_VERSION"
+          echo "Looking for file: _pokereval_${PYTHON_VER_FULL}.so"
+
+          mkdir -p legacy-build/
+          cp pokereval.py legacy-build/ || echo "Warning: pokereval.py not found"
+          cp test.py legacy-build/ || echo "Warning: test.py not found"
+
+          if [ -f "_pokereval_${PYTHON_VER_FULL}.so" ]; then
+            echo "✅ Copying _pokereval_${PYTHON_VER_FULL}.so to legacy-build/"
+            cp _pokereval_${PYTHON_VER_FULL}.so legacy-build/
+          else
+            echo "❌ File _pokereval_${PYTHON_VER_FULL}.so not found"
+            echo "Available .so files:"
+            ls -la _pokereval_*.so || echo "No .so files found"
+          fi
+
+          # Also copy wheel files to legacy build
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            echo "✅ Copying wheel files to legacy-build/"
+            cp dist/*.whl legacy-build/ || echo "Warning: Failed to copy wheels"
+          else
+            echo "❌ No wheel files found in dist/"
+          fi
+
+      - name: Upload legacy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: poker-eval-linux-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: legacy-build/*
+
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        build-method: ['uv', 'python']
+    name: Windows Python ${{ matrix.python-version }} (${{ matrix.build-method }})
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v1
+
+      - name: Install system dependencies
+        run: |
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+
+      - name: Initialize git submodules
+        run: |
+          git submodule update --init --recursive
+          git submodule status
+
+      - name: Setup Python with uv
+        shell: pwsh
+        run: |
+          Write-Host "Installing Python ${{ matrix.python-version }} with uv"
+          uv python install ${{ matrix.python-version }}
+
+          Write-Host "Creating virtual environment with Python ${{ matrix.python-version }}"
+          uv venv --python ${{ matrix.python-version }} .venv
+
+          Write-Host "Virtual environment created"
+          Get-ChildItem .venv\Scripts\python*
+
+          Write-Host "Python version in venv:"
+          .venv\Scripts\python.exe --version
+
+      - name: Set build method (uv)
+        if: matrix.build-method == 'uv'
+        shell: pwsh
+        run: |
+          echo "FORCE_BUILD_METHOD=uv" >> $env:GITHUB_ENV
+          Write-Host "Verifying uv installation..."
+          Get-Command uv -ErrorAction Stop
+          uv --version
+
+      - name: Set build method
+        if: matrix.build-method == 'python'
+        run: echo "FORCE_BUILD_METHOD=python" >> $env:GITHUB_ENV
+
+      - name: Set UTF-8 encoding
+        if: runner.os == 'Windows'
+        run: chcp 65001
+        shell: cmd
+
+      - name: Debug environment before build
+        shell: pwsh
+        run: |
+          Write-Host "=== Debug Information ==="
+          Write-Host "Current directory: $PWD"
+          Write-Host "Environment variables:"
+          Write-Host "  MATRIX_PYTHON_VERSION: $env:MATRIX_PYTHON_VERSION"
+          Write-Host "  FORCE_BUILD_METHOD: $env:FORCE_BUILD_METHOD"
+          Write-Host ""
+          Write-Host "Files in current directory:"
+          Get-ChildItem -Force
+          Write-Host ""
+          Write-Host "Python executable:"
+          Get-Command python -ErrorAction SilentlyContinue | Select-Object Source
+          Write-Host ""
+          Write-Host "Git submodules status:"
+          git submodule status
+          Write-Host ""
+          if ($env:FORCE_BUILD_METHOD -eq 'uv') {
+            Write-Host "UV executable:"
+            Get-Command uv -ErrorAction SilentlyContinue | Select-Object Source
+          }
+
+      - name: Build project and create wheel
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        shell: bash
+        run: |
+          set -e
+          export PYTHONUTF8=1
+
+          echo "Building with build.sh for Python ${{ matrix.python-version }}"
+          echo "Using uv virtual environment"
+
+          # Activate uv virtual environment
+          source .venv/Scripts/activate
+
+          # Show which Python we're using
+          echo "Active Python: $(which python)"
+          echo "Python version: $(python --version)"
+
+          # Get the actual Python version installed by uv
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          echo "Actual Python version: $ACTUAL_PYTHON_VERSION"
+
+          # Use build.sh with the real version
+          ./build.sh "$ACTUAL_PYTHON_VERSION" --use-venv
+
+          # Debug wheel creation
+          echo "=== Post-build debug ==="
+          echo "Checking for dist directory and wheel files:"
+          if [ -d "dist" ]; then ls -la dist/; else echo "No dist directory found"; fi
+          echo "Checking for built extensions:"
+          ls -la _pokereval_*.pyd 2>/dev/null || echo "No .pyd files found"
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-windows-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: dist/*.whl
+
+      - name: Upload binary artifact (legacy)
+        shell: bash
+        run: |
+          # Activate uv virtual environment
+          source .venv/Scripts/activate
+
+          # Get actual Python version instead of hardcoded .0
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          PYTHON_VER_FULL=$(echo "$ACTUAL_PYTHON_VERSION" | sed 's/\./_/g')
+
+          echo "Creating legacy build with actual version: $ACTUAL_PYTHON_VERSION"
+          echo "Looking for file: _pokereval_${PYTHON_VER_FULL}.pyd"
+
+          mkdir -p legacy-build/
+          cp pokereval.py legacy-build/ || echo "Warning: pokereval.py not found"
+          cp test.py legacy-build/ || echo "Warning: test.py not found"
+
+          if [ -f "_pokereval_${PYTHON_VER_FULL}.pyd" ]; then
+            echo "✅ Copying _pokereval_${PYTHON_VER_FULL}.pyd to legacy-build/"
+            cp _pokereval_${PYTHON_VER_FULL}.pyd legacy-build/
+          else
+            echo "❌ File _pokereval_${PYTHON_VER_FULL}.pyd not found"
+            echo "Available .pyd files:"
+            ls -la _pokereval_*.pyd || echo "No .pyd files found"
+          fi
+
+          # Also copy wheel files to legacy build
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            echo "✅ Copying wheel files to legacy-build/"
+            cp dist/*.whl legacy-build/ || echo "Warning: Failed to copy wheels"
+          else
+            echo "❌ No wheel files found in dist/"
+          fi
+        
+      - name: Upload legacy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: poker-eval-windows-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: legacy-build/*
+
+  build-on-macos:
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        build-method: ['uv', 'python']
+    name: macOS Intel Python ${{ matrix.python-version }} (${{ matrix.build-method }})
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v1
+
+      - name: Install dependencies
+        run: |
+          brew install cmake
+
+      - name: Setup Python with uv
+        run: |
+          echo "Installing Python ${{ matrix.python-version }} with uv"
+          uv python install ${{ matrix.python-version }}
+
+          echo "Creating virtual environment with Python ${{ matrix.python-version }}"
+          uv venv --python ${{ matrix.python-version }} .venv
+
+          echo "Virtual environment created"
+          ls -la .venv/bin/python*
+
+          echo "Python version in venv:"
+          .venv/bin/python --version
+
+      - name: Build project and create wheel
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          set -e
+          echo "Building with build.sh for Python ${{ matrix.python-version }}"
+          echo "Using uv virtual environment"
+
+          # Activate uv virtual environment
+          source .venv/bin/activate
+
+          # Show which Python we're using
+          echo "Active Python: $(which python)"
+          echo "Python version: $(python --version)"
+
+          # Create symlinks for CMakeLists.txt detection
+          PYTHON_MAJOR_MINOR=$(echo "${{ matrix.python-version }}" | cut -d. -f1,2)
+          sudo ln -sf $(which python) /usr/local/bin/python${PYTHON_MAJOR_MINOR}
+
+          echo "Created symlink: /usr/local/bin/python${PYTHON_MAJOR_MINOR} -> $(which python)"
+
+          # Get the actual Python version installed by uv (e.g., 3.9.19)
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          echo "Actual Python version: $ACTUAL_PYTHON_VERSION"
+
+          # Use build.sh with the real version
+          ./build.sh $ACTUAL_PYTHON_VERSION --use-venv
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-macos-intel-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: dist/*.whl
+
+      - name: Upload binary artifact (legacy)
+        run: |
+          # Get the actual Python version used for build
+          source .venv/bin/activate
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          PYTHON_VER_FULL=$(echo "$ACTUAL_PYTHON_VERSION" | sed 's/\./_/g')
+
+          echo "Creating legacy build with actual version: $ACTUAL_PYTHON_VERSION"
+          echo "Looking for file: _pokereval_${PYTHON_VER_FULL}.so"
+
+          mkdir -p legacy-build/
+          cp pokereval.py legacy-build/ || echo "Warning: pokereval.py not found"
+          cp test.py legacy-build/ || echo "Warning: test.py not found"
+
+          if [ -f "_pokereval_${PYTHON_VER_FULL}.so" ]; then
+            echo "✅ Copying _pokereval_${PYTHON_VER_FULL}.so to legacy-build/"
+            cp _pokereval_${PYTHON_VER_FULL}.so legacy-build/
+          else
+            echo "❌ File _pokereval_${PYTHON_VER_FULL}.so not found"
+            echo "Available .so files:"
+            ls -la _pokereval_*.so || echo "No .so files found"
+          fi
+
+          # Also copy wheel files to legacy build
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            echo "✅ Copying wheel files to legacy-build/"
+            cp dist/*.whl legacy-build/ || echo "Warning: Failed to copy wheels"
+          else
+            echo "❌ No wheel files found in dist/"
+          fi
+
+      - name: Upload legacy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: poker-eval-macos-intel-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: legacy-build/*
+
+  build-on-macos-arm:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        build-method: ['uv', 'python']
+    name: macOS ARM Python ${{ matrix.python-version }} (${{ matrix.build-method }})
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v1
+
+      - name: Install dependencies
+        run: |
+          brew install cmake
+
+      - name: Setup Python with uv
+        run: |
+          echo "Installing Python ${{ matrix.python-version }} with uv"
+          uv python install ${{ matrix.python-version }}
+
+          echo "Creating virtual environment with Python ${{ matrix.python-version }}"
+          uv venv --python ${{ matrix.python-version }} .venv
+
+          echo "Virtual environment created"
+          ls -la .venv/bin/python*
+
+          echo "Python version in venv:"
+          .venv/bin/python --version
+
+      - name: Build project and create wheel
+        env:
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          set -e
+          echo "Building with build.sh for Python ${{ matrix.python-version }}"
+          echo "Using uv virtual environment"
+
+          # Activate uv virtual environment
+          source .venv/bin/activate
+
+          # Show which Python we're using
+          echo "Active Python: $(which python)"
+          echo "Python version: $(python --version)"
+
+          # Create symlinks for CMakeLists.txt detection
+          PYTHON_MAJOR_MINOR=$(echo "${{ matrix.python-version }}" | cut -d. -f1,2)
+          sudo ln -sf $(which python) /usr/local/bin/python${PYTHON_MAJOR_MINOR}
+
+          echo "Created symlink: /usr/local/bin/python${PYTHON_MAJOR_MINOR} -> $(which python)"
+
+          # Get the actual Python version installed by uv (e.g., 3.9.19)
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          echo "Actual Python version: $ACTUAL_PYTHON_VERSION"
+
+          # Use build.sh with the real version
+          ./build.sh $ACTUAL_PYTHON_VERSION --use-venv
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-macos-arm-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: dist/*.whl
+
+      - name: Upload binary artifact (legacy)
+        run: |
+          # Get the actual Python version used for build
+          source .venv/bin/activate
+          ACTUAL_PYTHON_VERSION=$(python --version | cut -d' ' -f2)
+          PYTHON_VER_FULL=$(echo "$ACTUAL_PYTHON_VERSION" | sed 's/\./_/g')
+
+          echo "Creating legacy build with actual version: $ACTUAL_PYTHON_VERSION"
+          echo "Looking for file: _pokereval_${PYTHON_VER_FULL}.so"
+
+          mkdir -p legacy-build/
+          cp pokereval.py legacy-build/ || echo "Warning: pokereval.py not found"
+          cp test.py legacy-build/ || echo "Warning: test.py not found"
+
+          if [ -f "_pokereval_${PYTHON_VER_FULL}.so" ]; then
+            echo "✅ Copying _pokereval_${PYTHON_VER_FULL}.so to legacy-build/"
+            cp _pokereval_${PYTHON_VER_FULL}.so legacy-build/
+          else
+            echo "❌ File _pokereval_${PYTHON_VER_FULL}.so not found"
+            echo "Available .so files:"
+            ls -la _pokereval_*.so || echo "No .so files found"
+          fi
+
+          # Also copy wheel files to legacy build
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            echo "✅ Copying wheel files to legacy-build/"
+            cp dist/*.whl legacy-build/ || echo "Warning: Failed to copy wheels"
+          else
+            echo "❌ No wheel files found in dist/"
+          fi
+
+      - name: Upload legacy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: poker-eval-macos-arm-py${{ matrix.python-version }}-${{ matrix.build-method }}
+          path: legacy-build/*
+
+  # ============================================================================
+  # COLLECTION JOB - Collect all artifacts
+  # ============================================================================
+  collect-artifacts:
+    name: Collect All Artifacts
+    needs: [build-linux, build-windows, build-on-macos, build-on-macos-arm]
+    runs-on: ubuntu-latest
+    if: always() && (needs.build-linux.result == 'success' || needs.build-windows.result == 'success' || needs.build-on-macos.result == 'success' || needs.build-on-macos-arm.result == 'success')
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-artifacts/
+
+    - name: Display artifact structure
+      run: |
+        echo "=== Artifact Structure ==="
+        find all-artifacts/ -type f | sort
+        echo ""
+        echo "=== Build Summary ==="
+        find all-artifacts/ -name "*.so" -o -name "*.pyd" | wc -l | xargs echo "Number of binaries:"
+        find all-artifacts/ -name "*.whl" | wc -l | xargs echo "Number of wheels:"
+
+    - name: Create release package
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        mkdir -p release-package/wheels release-package/binaries
+        
+        # Create comprehensive README
+        cat > release-package/README.md << 'EOL'
+        # PyPoker-Eval Multi-Platform Release
+
+        This release contains pre-compiled binaries and wheels for multiple platforms.
+
+        ## Installation Options
+
+        ### Option 1: Using Wheels (Recommended for uv users)
+        Install with uv: uv pip install pypoker_eval-*.whl
+        Install with pip: pip install pypoker_eval-*.whl
+
+        ### Option 2: Using Binaries (Legacy)  
+        1. Download the appropriate binary for your platform
+        2. Place it in the same folder as pokereval.py
+        3. Import normally: import pokereval
+
+        ## Supported Platforms
+
+        ### Wheels Available
+        - Linux: Python 3.9, 3.10, 3.11, 3.12
+        - Windows: Python 3.9, 3.10, 3.11, 3.12  
+        - macOS Intel: Python 3.9, 3.10, 3.11, 3.12
+        - macOS ARM: Python 3.9, 3.10, 3.11, 3.12
+
+        ### Legacy Binaries Available
+        Same platforms as wheels, for direct usage.
+
+        Total: 32 wheels + 32 binaries = 64 artifacts (16 uv + 16 python builds each)
+
+        ## Usage with uv
+        This release is fully compatible with uv Python environments!
+        EOL
+        
+        # Copy all wheels
+        find all-artifacts/ -name "*.whl" -exec cp {} release-package/wheels/ \;
+        
+        # Copy all binaries  
+        find all-artifacts/ -name "*.so" -exec cp {} release-package/binaries/ \;
+        find all-artifacts/ -name "*.pyd" -exec cp {} release-package/binaries/ \;
+        
+        # Copy Python files (from any artifact)
+        find all-artifacts/ -name "pokereval.py" -exec cp {} release-package/ \; | head -1
+        find all-artifacts/ -name "test.py" -exec cp {} release-package/ \; | head -1
+        
+        # Summary
+        echo ""
+        echo "=== Release Package Summary ==="
+        echo "Wheels: $(find release-package/wheels/ -name '*.whl' | wc -l)"
+        echo "Binaries: $(find release-package/binaries/ -name '*.so' -o -name '*.pyd' | wc -l)"
+
+    - name: Upload release package
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: actions/upload-artifact@v4
+      with:
+        name: pypoker-eval-complete-release
+        path: release-package/*
+
+
+  github-release:
+    name: Create GitHub Release
+    needs: [collect-artifacts]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download release package
+      uses: actions/download-artifact@v4
+      with:
+        name: pypoker-eval-complete-release
+        path: release/
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: release/*
+        generate_release_notes: true
+        draft: false
+        name: PyPoker-Eval ${{ github.ref_name }}
+        body: |
+          ## Multi-Platform Release
+          
+          This automatic release contains pre-compiled binaries and wheels for:
+          
+          ### Supported Platforms
+          - **Linux** (x86_64)
+          - **Windows** (x64) 
+          - **macOS Intel** (x86_64)
+          - **macOS ARM** (arm64)
+          
+          ### Supported Python Versions
+          - Python 3.9
+          - Python 3.10  
+          - Python 3.11
+          - Python 3.12
+          
+          **Total: 32 different configurations** ✨
+          - 16 builds with uv
+          - 16 builds with standard Python
+          
+          ### Installation
+          
+          **Option 1: Using Wheels (Recommended)**
+          ```bash
+          # With uv
+          uv pip install pypoker_eval-*.whl
+          
+          # With pip  
+          pip install pypoker_eval-*.whl
+          ```
+          
+          **Option 2: Using Binaries (Legacy)**
+          1. Download the binary for your platform
+          2. Place it in the same folder as `pokereval.py`
+          3. Use normally with `import pokereval`
+          
+          ### uv Compatibility
+          This release is fully compatible with uv Python environments!
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
